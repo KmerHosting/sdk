@@ -1,47 +1,131 @@
-# KmerHosting SDK
+# 🚀 KmerHosting SDK
 
-Official, server-side SDKs for the KmerHosting API v1.
+Official server-side SDKs for the KmerHosting API.
 
-| Language | Package | Install |
-| --- | --- | --- |
-| TypeScript | `@kmerhosting/sdk` | npm |
-| Python | `kmerhosting-sdk` | pip |
-| PHP | `kmerhosting/sdk` | Composer |
-| Java | `com.kmerhosting:kmerhosting-sdk` | Maven |
+[![Verify SDKs](https://github.com/KmerHosting/sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/KmerHosting/sdk/actions/workflows/ci.yml)
+[![API documentation](https://img.shields.io/badge/API-Swagger-85ea2d)](https://api.kmerhosting.com/docs)
 
-All clients read `KMERHOSTING_API_KEY` by default. Keep the key on your server, never in browser code, mobile apps, repositories, or logs.
+## 📦 Install
+
+### TypeScript
+
+```bash
+npm install @kmerhosting/sdk
+```
+
+### Python
+
+```bash
+pip install kmerhosting-sdk
+```
+
+### PHP
+
+```bash
+composer require kmerhosting/sdk
+```
+
+### Java
+
+Add this dependency to `pom.xml`:
+
+```xml
+<dependency>
+  <groupId>com.kmerhosting</groupId>
+  <artifactId>kmerhosting-sdk</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+## 🔑 Authentication
+
+Set your API key in the server environment:
+
+```bash
+export KMERHOSTING_API_KEY="kh_live_..."
+```
+
+All SDKs read `KMERHOSTING_API_KEY` automatically.
+
+Keep this key on your server. Never put it in browser code, mobile apps, GitHub, or logs.
+
+## ⚡ Quick use
+
+### TypeScript
 
 ```ts
 import { KmerHostingClient } from "@kmerhosting/sdk";
 
 const client = new KmerHostingClient();
 const services = await client.services.list();
+
+console.log(services);
 ```
+
+### Python
 
 ```python
 from kmerhosting import KmerHostingClient
 
-services = KmerHostingClient().services.list()
+client = KmerHostingClient()
+services = client.services.list()
+
+print(services)
 ```
+
+### PHP
 
 ```php
-use KmerHosting\Client;
+<?php
 
-$services = (new Client())->services()->all();
+require __DIR__ . "/vendor/autoload.php";
+
+use KmerHosting\\Client;
+
+$client = new Client();
+$services = $client->services()->all();
+
+print_r($services);
 ```
+
+### Java
 
 ```java
-var services = new KmerHostingClient().services().list();
+import com.kmerhosting.sdk.KmerHostingClient;
+
+var client = new KmerHostingClient();
+var services = client.services().list();
+
+System.out.println(services);
 ```
 
-Every mutation accepts an optional idempotency key. Supply a stable key when retrying the same business operation; otherwise the SDK generates one.
+## 🧩 What you can manage
 
-The API contract is committed at [openapi/openapi.json](openapi/openapi.json) and is served at `https://api.kmerhosting.com/openapi.json` after the API is deployed.
+- Account and service inventory
+- Domains and DNS records
+- Email Hosting
+- Shared Hosting
+- LXC VPS resources
+- Safe service actions
 
-## Publishing
+Every write operation supports idempotency for safe retries.
 
-The source is public here first. Registry publication is intentionally separate: it needs ownership and trusted publishing configuration for npm, PyPI, Packagist and Maven Central. Do not add long-lived registry tokens to this repository. Once each registry release exists, use `npm install @kmerhosting/sdk`, `pip install kmerhosting-sdk`, `composer require kmerhosting/sdk`, or the Maven coordinate above.
+## 📚 Documentation
 
-## License
+- [Swagger UI](https://api.kmerhosting.com/docs)
+- [OpenAPI specification](openapi/openapi.json)
+- [API repository](https://github.com/KmerHosting/api)
+- [Issues and support](https://github.com/KmerHosting/sdk/issues)
+
+## 🏷️ Packages
+
+| Language | Package manager | Package |
+| --- | --- | --- |
+| TypeScript | npm | `@kmerhosting/sdk` |
+| Python | PyPI | `kmerhosting-sdk` |
+| PHP | Composer | `kmerhosting/sdk` |
+| Java | Maven Central | `com.kmerhosting:kmerhosting-sdk` |
+
+## 📄 License
 
 Apache-2.0. KmerHosting trademarks are not granted by the license.
