@@ -1,0 +1,62 @@
+name: Verify SDKs
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typescript:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+      - run: bun install --frozen-lockfile
+        working-directory: packages/typescript
+      - run: bun test && bun run typecheck && bun run build
+        working-directory: packages/typescript
+
+  python:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m json.tool openapi/openapi.json >/dev/null
+        working-directory: .
+      - run: PYTHONPATH=src python -m unittest discover -s tests -v
+        working-directory: packages/python
+
+  php:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+      - run: find src tests -name '*.php' -print0 | xargs -0 -n1 php -l
+        working-directory: packages/php
+      - run: php tests/ClientTest.php
+        working-directory: packages/php
+
+  java:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - run: mvn --batch-mode verify
+        working-directory: packages/java

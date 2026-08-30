@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+dist/
+build/
+*.egg-info/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+target/
+.idea/
+.vscode/
