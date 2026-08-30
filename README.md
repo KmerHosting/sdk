@@ -49,7 +49,7 @@ All SDKs read `KMERHOSTING_API_KEY` automatically.
 
 Keep this key on your server. Never put it in browser code, mobile apps, GitHub, or logs.
 
-## ⚡ Quick use
+## Quick use
 
 ### TypeScript
 
@@ -99,7 +99,7 @@ var services = client.services().list();
 System.out.println(services);
 ```
 
-## 🧩 What you can manage
+## What you can manage
 
 - Account and service inventory
 - Domains and DNS records
