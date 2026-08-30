@@ -1,0 +1,26 @@
+{
+  "name": "kmerhosting/sdk",
+  "description": "Official PHP SDK for the KmerHosting API.",
+  "type": "library",
+  "license": "Apache-2.0",
+  "require": {
+    "php": "^8.1",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "KmerHosting\\": "packages/php/src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "KmerHosting\\Tests\\": "packages/php/tests/"
+    }
+  },
+  "support": {
+    "source": "https://github.com/KmerHosting/sdk"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
