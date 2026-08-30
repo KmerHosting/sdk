@@ -4,9 +4,9 @@ Official, server-side SDKs for the KmerHosting API v1.
 
 | Language | Package | Install |
 | --- | --- | --- |
-| TypeScript | `@kmerhosting/sdk` | `npm install @kmerhosting/sdk` |
-| Python | `kmerhosting-sdk` | `pip install kmerhosting-sdk` |
-| PHP | `kmerhosting/sdk` | `composer require kmerhosting/sdk` |
+| TypeScript | `@kmerhosting/sdk` | npm |
+| Python | `kmerhosting-sdk` | pip |
+| PHP | `kmerhosting/sdk` | Composer |
 | Java | `com.kmerhosting:kmerhosting-sdk` | Maven |
 
 All clients read `KMERHOSTING_API_KEY` by default. Keep the key on your server, never in browser code, mobile apps, repositories, or logs.
@@ -40,7 +40,7 @@ The API contract is committed at [openapi/openapi.json](openapi/openapi.json) an
 
 ## Publishing
 
-The source is public here first. Registry publication is intentionally separate: it needs ownership and trusted publishing configuration for npm, PyPI, Packagist and Maven Central. Do not add long-lived registry tokens to this repository.
+The source is public here first. Registry publication is intentionally separate: it needs ownership and trusted publishing configuration for npm, PyPI, Packagist and Maven Central. Do not add long-lived registry tokens to this repository. Once each registry release exists, use `npm install @kmerhosting/sdk`, `pip install kmerhosting-sdk`, `composer require kmerhosting/sdk`, or the Maven coordinate above.
 
 ## License
 
