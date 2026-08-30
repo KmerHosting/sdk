@@ -1,6 +1,6 @@
 {
   "name": "@kmerhosting/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official TypeScript SDK for the KmerHosting API.",
   "license": "Apache-2.0",
   "type": "module",
