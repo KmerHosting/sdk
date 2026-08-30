@@ -5,12 +5,13 @@ on:
   push:
     tags: ["python-v*"]
 
-permissions:
-  contents: read
-
 jobs:
   publish:
     runs-on: ubuntu-24.04
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write
     defaults:
       run:
         working-directory: packages/python
