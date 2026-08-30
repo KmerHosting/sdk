@@ -1,4 +1,4 @@
-# 🚀 KmerHosting SDK
+# Official KmerHosting SDK
 
 Official server-side SDKs for the KmerHosting API.
 
