@@ -49,6 +49,67 @@ All SDKs read `KMERHOSTING_API_KEY` automatically.
 
 Keep this key on your server. Never put it in browser code, mobile apps, GitHub, or logs.
 
+## ⚡ Quick use
+
+### TypeScript
+
+```ts
+import { KmerHostingClient } from "@kmerhosting/sdk";
+
+const client = new KmerHostingClient();
+const services = await client.services.list();
+
+console.log(services);
+```
+
+### Python
+
+```python
+from kmerhosting import KmerHostingClient
+
+client = KmerHostingClient()
+services = client.services.list()
+
+print(services)
+```
+
+### PHP
+
+```php
+<?php
+
+require __DIR__ . "/vendor/autoload.php";
+
+use KmerHosting\\Client;
+
+$client = new Client();
+$services = $client->services()->all();
+
+print_r($services);
+```
+
+### Java
+
+```java
+import com.kmerhosting.sdk.KmerHostingClient;
+
+var client = new KmerHostingClient();
+var services = client.services().list();
+
+System.out.println(services);
+```
+
+## 🧩 What you can manage
+
+- Account and service inventory
+- Domains and DNS records
+- Email Hosting
+- Shared Hosting
+- LXC VPS resources
+- Safe service actions
+
+Every write operation supports idempotency for safe retries.
+
 ## Documentation
 
 - [Swagger UI](https://api.kmerhosting.com/docs)
