@@ -93,8 +93,13 @@ public final class KmerHostingClient {
     }
   }
 
-  private JsonNode parse(String body) throws JsonProcessingException {
-    return body == null || body.isBlank() ? NullNode.instance : mapper.readTree(body);
+  private JsonNode parse(String body) {
+    if (body == null || body.isBlank()) return NullNode.instance;
+    try {
+      return mapper.readTree(body);
+    } catch (JsonProcessingException error) {
+      return mapper.createObjectNode().put("data", body);
+    }
   }
 
   static String id(String value) {

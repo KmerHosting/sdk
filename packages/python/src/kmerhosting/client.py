@@ -189,5 +189,9 @@ class KmerHostingClient:
     def _decode(raw: bytes) -> Json:
         if not raw:
             return {}
-        parsed = json.loads(raw.decode("utf-8"))
+        text = raw.decode("utf-8", errors="replace")
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            return {"data": text}
         return parsed if isinstance(parsed, Mapping) else {"data": parsed}

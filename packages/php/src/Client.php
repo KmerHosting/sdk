@@ -11,14 +11,17 @@ final class Client
 {
     private string $apiKey;
     private string $baseUrl;
+    /** @var callable|null */
+    private $transport;
 
-    public function __construct(?string $apiKey = null, string $baseUrl = 'https://api.kmerhosting.com', private readonly int $timeout = 30)
+    public function __construct(?string $apiKey = null, string $baseUrl = 'https://api.kmerhosting.com', private readonly int $timeout = 30, ?callable $transport = null)
     {
         $this->apiKey = $apiKey ?: (getenv('KMERHOSTING_API_KEY') ?: '');
         if ($this->apiKey === '') {
             throw new RuntimeException('Set KMERHOSTING_API_KEY or pass an API key to Client.');
         }
         $this->baseUrl = rtrim($baseUrl, '/');
+        $this->transport = $transport;
     }
 
     public function account(): AccountResource
@@ -74,13 +77,30 @@ final class Client
             $headers[] = "Idempotency-Key: {$idempotencyKey}";
         }
 
+        if ($body !== null) {
+            $headers[] = 'Content-Type: application/json';
+        }
+
+        if ($this->transport !== null) {
+            $response = ($this->transport)($method, $path, $body, $headers, $idempotencyKey);
+            $status = (int) ($response['status'] ?? 200);
+            $payload = is_array($response['body'] ?? null) ? $response['body'] : ['data' => $response['body'] ?? null];
+            if ($status < 200 || $status >= 300) {
+                $error = is_array($payload['error'] ?? null) ? $payload['error'] : [];
+                throw new ApiException(
+                    (string) ($error['message'] ?? "KmerHosting API request failed with status {$status}."),
+                    $status,
+                    (string) ($error['code'] ?? 'request_failed'),
+                    isset($error['request_id']) ? (string) $error['request_id'] : null,
+                    $payload,
+                );
+            }
+            return $payload;
+        }
+
         $curl = curl_init($this->baseUrl . $path);
         if ($curl === false) {
             throw new RuntimeException('Unable to initialize the HTTP client.');
-        }
-
-        if ($body !== null) {
-            $headers[] = 'Content-Type: application/json';
         }
 
         curl_setopt_array($curl, [
