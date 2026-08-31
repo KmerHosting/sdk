@@ -1,0 +1,54 @@
+name: Publish PHP SDK
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: curl, json
+          tools: composer
+
+      - name: Validate Composer package
+        run: composer validate --strict
+
+      - name: Lint PHP sources and tests
+        run: find packages/php/src packages/php/tests -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Run PHP SDK contract tests
+        run: php packages/php/tests/ClientTest.php
+
+  sync-packagist:
+    needs: verify
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Trigger Packagist update
+        env:
+          PACKAGIST_USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
+          PACKAGIST_API_TOKEN: ${{ secrets.PACKAGIST_API_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$PACKAGIST_USERNAME" || -z "$PACKAGIST_API_TOKEN" ]]; then
+            echo "::notice::Packagist sync skipped; configure PACKAGIST_USERNAME and PACKAGIST_API_TOKEN after the package is submitted."
+            exit 0
+          fi
+
+          curl --fail-with-body --silent --show-error --retry 3 \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --header "Authorization: Bearer ${PACKAGIST_USERNAME}:${PACKAGIST_API_TOKEN}" \
+            --data '{"repository":"https://github.com/KmerHosting/sdk"}' \
+            https://packagist.org/api/update-package

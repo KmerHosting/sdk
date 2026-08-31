@@ -116,6 +116,7 @@ Every write operation supports idempotency for safe retries.
 - [OpenAPI specification](openapi/openapi.json)
 - [API repository](https://github.com/KmerHosting/api)
 - [Issues and support](https://github.com/KmerHosting/sdk/issues)
+- [Packagist release strategy](docs/PACKAGIST.md)
 
 ## 🏷️ Packages
 
