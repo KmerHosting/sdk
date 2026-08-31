@@ -15,7 +15,9 @@ import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 class KmerHostingClientTest {
@@ -80,11 +82,11 @@ class KmerHostingClientTest {
         assertTrue(request.startsWith(operation.method() + " " + operation.path() + " "), operation.name());
         assertTrue(request.contains("Authorization: Bearer kh_live_test"), operation.name());
         if (operation.method().equals("GET")) {
-          assertTrue(!request.contains("Idempotency-Key:"), operation.name());
+          assertTrue(!request.toLowerCase(Locale.ROOT).contains("idempotency-key:"), operation.name());
         } else {
-          assertTrue(request.contains("Idempotency-Key:"), operation.name());
+          assertTrue(request.toLowerCase(Locale.ROOT).contains("idempotency-key:"), operation.name());
         }
-        if (operation.bodyPart() != null) assertTrue(request.contains(operation.bodyPart()), operation.name());
+        if (operation.bodyPart() != null) assertTrue(request.contains(operation.bodyPart()), () -> operation.name() + " request=" + request);
       }
       assertEquals(25, requests.size());
 
@@ -107,7 +109,10 @@ class KmerHostingClientTest {
 
   private static void respond(HttpExchange exchange, List<String> requests, AtomicBoolean errorMode, AtomicBoolean malformedMode) throws IOException {
     String body = new String(exchange.getRequestBody().readAllBytes());
-    requests.add(exchange.getRequestMethod() + " " + URI.create(exchange.getRequestURI().toString()).getPath() + " " + exchange.getRequestHeaders() + " " + body);
+    String headers = exchange.getRequestHeaders().entrySet().stream()
+        .map(entry -> entry.getKey() + ": " + String.join(",", entry.getValue()))
+        .collect(Collectors.joining("; "));
+    requests.add(exchange.getRequestMethod() + " " + URI.create(exchange.getRequestURI().toString()).getPath() + " " + headers + " " + body);
     int status = malformedMode.get() ? 502 : (errorMode.get() ? 403 : (exchange.getRequestMethod().equals("GET") ? 200 : 202));
     String response = malformedMode.get()
         ? "upstream unavailable"
