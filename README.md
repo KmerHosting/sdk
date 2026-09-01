@@ -33,7 +33,7 @@ Add this dependency to `pom.xml`:
 <dependency>
   <groupId>com.kmerhosting</groupId>
   <artifactId>kmerhosting-sdk</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 

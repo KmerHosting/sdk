@@ -83,6 +83,11 @@ export class KmerHostingClient {
     get: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/lxc/instances/${encode(serviceId)}`, undefined, options),
     metrics: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/lxc/instances/${encode(serviceId)}/metrics`, undefined, options),
     action: (serviceId: string, action: "start" | "restart" | "freeze" | "stop", options?: MutationOptions) => this.mutate("POST", `/v1/lxc/instances/${encode(serviceId)}/actions`, { action }, options),
+    changePassword: (serviceId: string, password: string, options?: MutationOptions) => this.mutate("POST", `/v1/lxc/instances/${encode(serviceId)}/password`, { password }, options),
+    reinstall: (serviceId: string, distribution: string, options?: MutationOptions) => this.mutate("POST", `/v1/lxc/instances/${encode(serviceId)}/reinstall`, { distribution }, options),
+    createTerminalTicket: (serviceId: string, options?: MutationOptions) => this.mutate("POST", `/v1/lxc/instances/${encode(serviceId)}/terminal-ticket`, {}, options),
+    setAutoRenew: (serviceId: string, enabled: boolean, options?: MutationOptions) => this.mutate("PUT", `/v1/lxc/instances/${encode(serviceId)}/auto-renew`, { enabled }, options),
+    setBillingPeriod: (serviceId: string, billingMonths: 1 | 3 | 6 | 12, options?: MutationOptions) => this.mutate("PUT", `/v1/lxc/instances/${encode(serviceId)}/billing-period`, { billingMonths }, options),
     snapshots: {
       list: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/lxc/instances/${encode(serviceId)}/snapshots`, undefined, options),
       mutate: (serviceId: string, action: "create" | "delete" | "restore", name: string, options?: MutationOptions) => this.mutate("POST", `/v1/lxc/instances/${encode(serviceId)}/snapshots`, { action, name }, options),

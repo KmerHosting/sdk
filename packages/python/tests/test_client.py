@@ -51,14 +51,28 @@ class ClientTests(unittest.TestCase):
             ("hosting.create_panel_access", "POST", f"/v1/hosting/services/{ID}/panel-access", lambda: client.hosting.create_panel_access(ID, "filemanager", "hosting-panel-1"), {"target": "filemanager"}),
             ("lxc.list", "GET", "/v1/lxc/instances", lambda: client.lxc.list(), None),
             ("lxc.get", "GET", f"/v1/lxc/instances/{ID}", lambda: client.lxc.get(ID), None),
+            ("lxc.metrics", "GET", f"/v1/lxc/instances/{ID}/metrics", lambda: client.lxc.metrics(ID), None),
+            ("lxc.action", "POST", f"/v1/lxc/instances/{ID}/actions", lambda: client.lxc.action(ID, "restart", "lxc-action-1"), {"action": "restart"}),
+            ("lxc.snapshots.list", "GET", f"/v1/lxc/instances/{ID}/snapshots", lambda: client.lxc.list_snapshots(ID), None),
+            ("lxc.snapshots.mutate", "POST", f"/v1/lxc/instances/{ID}/snapshots", lambda: client.lxc.snapshot(ID, "create", "before-upgrade", "lxc-snapshot-1"), {"action": "create", "name": "before-upgrade"}),
+            ("lxc.password", "POST", f"/v1/lxc/instances/{ID}/password", lambda: client.lxc.change_password(ID, "Safe-password-123", "lxc-password-1"), {"password": "Safe-password-123"}),
+            ("lxc.reinstall", "POST", f"/v1/lxc/instances/{ID}/reinstall", lambda: client.lxc.reinstall(ID, "ubuntu-24.04", "lxc-reinstall-1"), {"distribution": "ubuntu-24.04"}),
+            ("lxc.terminal", "POST", f"/v1/lxc/instances/{ID}/terminal-ticket", lambda: client.lxc.create_terminal_ticket(ID, "lxc-terminal-1"), {}),
+            ("lxc.auto-renew", "PUT", f"/v1/lxc/instances/{ID}/auto-renew", lambda: client.lxc.set_auto_renew(ID, True, "lxc-auto-renew-1"), {"enabled": True}),
+            ("lxc.billing-period", "PUT", f"/v1/lxc/instances/{ID}/billing-period", lambda: client.lxc.set_billing_period(ID, 3, "lxc-billing-1"), {"billingMonths": 3}),
             ("kvm.list", "GET", "/v1/kvm/instances", lambda: client.kvm.list(), None),
             ("kvm.get", "GET", f"/v1/kvm/instances/{ID}", lambda: client.kvm.get(ID), None),
             ("kvm.action", "POST", f"/v1/kvm/instances/{ID}/actions", lambda: client.kvm.action(ID, "restart", "kvm-action-1"), {"action": "restart"}),
             ("kvm.set_auto_renew", "PUT", f"/v1/kvm/instances/{ID}/auto-renew", lambda: client.kvm.set_auto_renew(ID, True, "kvm-renew-1"), {"enabled": True}),
+            ("kvm.password", "POST", f"/v1/kvm/instances/{ID}/password", lambda: client.kvm.reset_password(ID, "Safe-password-123", "kvm-password-1"), {"password": "Safe-password-123"}),
+            ("kvm.renew", "POST", f"/v1/kvm/instances/{ID}/renew", lambda: client.kvm.renew(ID, 3, "kvm-renew-service-1"), {"billingMonths": 3}),
+            ("kvm.cancel", "POST", f"/v1/kvm/instances/{ID}/cancel", lambda: client.kvm.cancel(ID, "kvm-cancel-1"), {}),
+            ("kvm.keep", "POST", f"/v1/kvm/instances/{ID}/keep-service", lambda: client.kvm.keep_service(ID, "kvm-keep-1"), {}),
             ("kvm.snapshots.list", "GET", f"/v1/kvm/instances/{ID}/snapshots", lambda: client.kvm.snapshots.list(ID), None),
             ("kvm.snapshots.create", "POST", f"/v1/kvm/instances/{ID}/snapshots", lambda: client.kvm.snapshots.create(ID, "test", "snapshot", "snapshot-create-1"), {"name": "test", "description": "snapshot"}),
             ("kvm.snapshots.update", "PATCH", f"/v1/kvm/instances/{ID}/snapshots/{RECORD_ID}", lambda: client.kvm.snapshots.update(ID, RECORD_ID, "renamed", None, "snapshot-update-1"), {"name": "renamed"}),
             ("kvm.snapshots.delete", "DELETE", f"/v1/kvm/instances/{ID}/snapshots/{RECORD_ID}", lambda: client.kvm.snapshots.delete(ID, RECORD_ID, "snapshot-delete-1"), None),
+            ("kvm.snapshots.rollback", "POST", f"/v1/kvm/instances/{ID}/snapshots/rollback", lambda: client.kvm.snapshots.rollback(ID, RECORD_ID, "snapshot-rollback-1"), {"snapshotId": RECORD_ID}),
         ]
 
         for name, method, path, invoke, expected_body in calls:
@@ -75,7 +89,7 @@ class ClientTests(unittest.TestCase):
                     if expected_body is not None:
                         self.assertEqual(json.loads(request.data.decode()), expected_body)
 
-        self.assertEqual(urlopen.call_count, 28)
+        self.assertEqual(urlopen.call_count, 42)
 
     @patch("kmerhosting.client.urllib.request.urlopen")
     def test_preserves_structured_api_errors(self, urlopen):

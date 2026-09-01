@@ -142,8 +142,26 @@ class _LxcResource(_Resource):
     def action(self, service_id: str, action: str, idempotency_key: Optional[str] = None) -> Json:
         return self._client._mutate("POST", f"/v1/lxc/instances/{_encode(service_id)}/actions", {"action": action}, idempotency_key)
 
+    def list_snapshots(self, service_id: str) -> Json:
+        return self._client._request("GET", f"/v1/lxc/instances/{_encode(service_id)}/snapshots")
+
     def snapshot(self, service_id: str, action: str, name: str, idempotency_key: Optional[str] = None) -> Json:
         return self._client._mutate("POST", f"/v1/lxc/instances/{_encode(service_id)}/snapshots", {"action": action, "name": name}, idempotency_key)
+
+    def change_password(self, service_id: str, password: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/lxc/instances/{_encode(service_id)}/password", {"password": password}, idempotency_key)
+
+    def reinstall(self, service_id: str, distribution: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/lxc/instances/{_encode(service_id)}/reinstall", {"distribution": distribution}, idempotency_key)
+
+    def create_terminal_ticket(self, service_id: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/lxc/instances/{_encode(service_id)}/terminal-ticket", {}, idempotency_key)
+
+    def set_auto_renew(self, service_id: str, enabled: bool, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("PUT", f"/v1/lxc/instances/{_encode(service_id)}/auto-renew", {"enabled": enabled}, idempotency_key)
+
+    def set_billing_period(self, service_id: str, billing_months: int, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("PUT", f"/v1/lxc/instances/{_encode(service_id)}/billing-period", {"billingMonths": billing_months}, idempotency_key)
 
 
 class _KvmResource(_Resource):

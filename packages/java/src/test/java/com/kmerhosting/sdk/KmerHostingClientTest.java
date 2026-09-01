@@ -69,14 +69,28 @@ class KmerHostingClientTest {
           new Operation("hosting.panelAccess", "POST", "/v1/hosting/services/" + ID + "/panel-access", () -> client.hosting().createPanelAccess(ID, "filemanager", "hosting-panel-1"), "filemanager"),
           new Operation("lxc.list", "GET", "/v1/lxc/instances", () -> client.lxc().list(), null),
           new Operation("lxc.get", "GET", "/v1/lxc/instances/" + ID, () -> client.lxc().get(ID), null),
+          new Operation("lxc.metrics", "GET", "/v1/lxc/instances/" + ID + "/metrics", () -> client.lxc().metrics(ID), null),
+          new Operation("lxc.action", "POST", "/v1/lxc/instances/" + ID + "/actions", () -> client.lxc().action(ID, "restart", "lxc-action-1"), "restart"),
+          new Operation("lxc.snapshots.list", "GET", "/v1/lxc/instances/" + ID + "/snapshots", () -> client.lxc().listSnapshots(ID), null),
+          new Operation("lxc.snapshots.mutate", "POST", "/v1/lxc/instances/" + ID + "/snapshots", () -> client.lxc().snapshot(ID, "create", "before-upgrade", "lxc-snapshot-1"), "before-upgrade"),
+          new Operation("lxc.password", "POST", "/v1/lxc/instances/" + ID + "/password", () -> client.lxc().changePassword(ID, "Safe-password-123", "lxc-password-1"), "Safe-password-123"),
+          new Operation("lxc.reinstall", "POST", "/v1/lxc/instances/" + ID + "/reinstall", () -> client.lxc().reinstall(ID, "ubuntu-24.04", "lxc-reinstall-1"), "ubuntu-24.04"),
+          new Operation("lxc.terminal", "POST", "/v1/lxc/instances/" + ID + "/terminal-ticket", () -> client.lxc().createTerminalTicket(ID, "lxc-terminal-1"), null),
+          new Operation("lxc.auto-renew", "PUT", "/v1/lxc/instances/" + ID + "/auto-renew", () -> client.lxc().setAutoRenew(ID, true, "lxc-auto-renew-1"), "true"),
+          new Operation("lxc.billing-period", "PUT", "/v1/lxc/instances/" + ID + "/billing-period", () -> client.lxc().setBillingPeriod(ID, 3, "lxc-billing-1"), "3"),
           new Operation("kvm.list", "GET", "/v1/kvm/instances", () -> client.kvm().list(), null),
           new Operation("kvm.get", "GET", "/v1/kvm/instances/" + ID, () -> client.kvm().get(ID), null),
           new Operation("kvm.action", "POST", "/v1/kvm/instances/" + ID + "/actions", () -> client.kvm().action(ID, KvmAction.RESTART, "kvm-action-1"), "restart"),
           new Operation("kvm.autoRenew", "PUT", "/v1/kvm/instances/" + ID + "/auto-renew", () -> client.kvm().setAutoRenew(ID, true, "kvm-renew-1"), "\"enabled\":true"),
+          new Operation("kvm.password", "POST", "/v1/kvm/instances/" + ID + "/password", () -> client.kvm().resetPassword(ID, "Safe-password-123", "kvm-password-1"), "Safe-password-123"),
+          new Operation("kvm.renew", "POST", "/v1/kvm/instances/" + ID + "/renew", () -> client.kvm().renew(ID, 3, "kvm-renew-service-1"), "3"),
+          new Operation("kvm.cancel", "POST", "/v1/kvm/instances/" + ID + "/cancel", () -> client.kvm().cancel(ID, "kvm-cancel-1"), null),
+          new Operation("kvm.keep", "POST", "/v1/kvm/instances/" + ID + "/keep-service", () -> client.kvm().keepService(ID, "kvm-keep-1"), null),
           new Operation("kvm.snapshots.list", "GET", "/v1/kvm/instances/" + ID + "/snapshots", () -> client.kvm().snapshots().list(ID), null),
           new Operation("kvm.snapshots.create", "POST", "/v1/kvm/instances/" + ID + "/snapshots", () -> client.kvm().snapshots().create(ID, java.util.Map.of("name", "test", "description", "snapshot"), "snapshot-create-1"), "snapshot"),
           new Operation("kvm.snapshots.update", "PATCH", "/v1/kvm/instances/" + ID + "/snapshots/" + RECORD_ID, () -> client.kvm().snapshots().update(ID, RECORD_ID, java.util.Map.of("name", "renamed"), "snapshot-update-1"), "renamed"),
-          new Operation("kvm.snapshots.delete", "DELETE", "/v1/kvm/instances/" + ID + "/snapshots/" + RECORD_ID, () -> client.kvm().snapshots().delete(ID, RECORD_ID, "snapshot-delete-1"), null)
+          new Operation("kvm.snapshots.delete", "DELETE", "/v1/kvm/instances/" + ID + "/snapshots/" + RECORD_ID, () -> client.kvm().snapshots().delete(ID, RECORD_ID, "snapshot-delete-1"), null),
+          new Operation("kvm.snapshots.rollback", "POST", "/v1/kvm/instances/" + ID + "/snapshots/rollback", () -> client.kvm().snapshots().rollback(ID, RECORD_ID, "snapshot-rollback-1"), RECORD_ID)
       );
 
       for (Operation operation : operations) {
@@ -91,7 +105,7 @@ class KmerHostingClientTest {
         }
         if (operation.bodyPart() != null) assertTrue(request.contains(operation.bodyPart()), () -> operation.name() + " request=" + request);
       }
-      assertEquals(28, requests.size());
+      assertEquals(42, requests.size());
 
       errorMode.set(true);
       KmerHostingApiException error = assertThrows(KmerHostingApiException.class, () -> client.account().get());

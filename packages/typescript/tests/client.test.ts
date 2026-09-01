@@ -49,14 +49,24 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
     { name: "lxc.action", method: "POST", path: `/v1/lxc/instances/${id}/actions`, body: { action: "restart" }, invoke: (c) => c.lxc.action(id, "restart", { idempotencyKey: "lxc-action-1" }) },
     { name: "lxc.snapshots.list", method: "GET", path: `/v1/lxc/instances/${id}/snapshots`, invoke: (c) => c.lxc.snapshots.list(id) },
     { name: "lxc.snapshots.mutate", method: "POST", path: `/v1/lxc/instances/${id}/snapshots`, body: { action: "create", name: "before-upgrade" }, invoke: (c) => c.lxc.snapshots.mutate(id, "create", "before-upgrade", { idempotencyKey: "lxc-snapshot-1" }) },
+    { name: "lxc.password", method: "POST", path: `/v1/lxc/instances/${id}/password`, body: { password: "Safe-password-123" }, invoke: (c) => c.lxc.changePassword(id, "Safe-password-123", { idempotencyKey: "lxc-password-1" }) },
+    { name: "lxc.reinstall", method: "POST", path: `/v1/lxc/instances/${id}/reinstall`, body: { distribution: "ubuntu-24.04" }, invoke: (c) => c.lxc.reinstall(id, "ubuntu-24.04", { idempotencyKey: "lxc-reinstall-1" }) },
+    { name: "lxc.terminal", method: "POST", path: `/v1/lxc/instances/${id}/terminal-ticket`, body: {}, invoke: (c) => c.lxc.createTerminalTicket(id, { idempotencyKey: "lxc-terminal-1" }) },
+    { name: "lxc.auto-renew", method: "PUT", path: `/v1/lxc/instances/${id}/auto-renew`, body: { enabled: true }, invoke: (c) => c.lxc.setAutoRenew(id, true, { idempotencyKey: "lxc-auto-renew-1" }) },
+    { name: "lxc.billing-period", method: "PUT", path: `/v1/lxc/instances/${id}/billing-period`, body: { billingMonths: 3 }, invoke: (c) => c.lxc.setBillingPeriod(id, 3, { idempotencyKey: "lxc-billing-1" }) },
     { name: "kvm.list", method: "GET", path: "/v1/kvm/instances", invoke: (c) => c.kvm.list() },
     { name: "kvm.get", method: "GET", path: `/v1/kvm/instances/${id}`, invoke: (c) => c.kvm.get(id) },
     { name: "kvm.action", method: "POST", path: `/v1/kvm/instances/${id}/actions`, body: { action: "restart" }, invoke: (c) => c.kvm.action(id, "restart", { idempotencyKey: "kvm-action-1" }) },
     { name: "kvm.setAutoRenew", method: "PUT", path: `/v1/kvm/instances/${id}/auto-renew`, body: { enabled: true }, invoke: (c) => c.kvm.setAutoRenew(id, true, { idempotencyKey: "kvm-renew-1" }) },
+    { name: "kvm.password", method: "POST", path: `/v1/kvm/instances/${id}/password`, body: { password: "Safe-password-123" }, invoke: (c) => c.kvm.resetPassword(id, "Safe-password-123", { idempotencyKey: "kvm-password-1" }) },
+    { name: "kvm.renew", method: "POST", path: `/v1/kvm/instances/${id}/renew`, body: { billingMonths: 3 }, invoke: (c) => c.kvm.renew(id, 3, { idempotencyKey: "kvm-renew-service-1" }) },
+    { name: "kvm.cancel", method: "POST", path: `/v1/kvm/instances/${id}/cancel`, body: {}, invoke: (c) => c.kvm.cancel(id, { idempotencyKey: "kvm-cancel-1" }) },
+    { name: "kvm.keep", method: "POST", path: `/v1/kvm/instances/${id}/keep-service`, body: {}, invoke: (c) => c.kvm.keepService(id, { idempotencyKey: "kvm-keep-1" }) },
     { name: "kvm.snapshots.list", method: "GET", path: `/v1/kvm/instances/${id}/snapshots`, invoke: (c) => c.kvm.snapshots.list(id) },
     { name: "kvm.snapshots.create", method: "POST", path: `/v1/kvm/instances/${id}/snapshots`, body: { name: "test", description: "snapshot" }, invoke: (c) => c.kvm.snapshots.create(id, { name: "test", description: "snapshot" }, { idempotencyKey: "snapshot-create-1" }) },
     { name: "kvm.snapshots.update", method: "PATCH", path: `/v1/kvm/instances/${id}/snapshots/${recordId}`, body: { name: "renamed" }, invoke: (c) => c.kvm.snapshots.update(id, recordId, { name: "renamed" }, { idempotencyKey: "snapshot-update-1" }) },
     { name: "kvm.snapshots.delete", method: "DELETE", path: `/v1/kvm/instances/${id}/snapshots/${recordId}`, invoke: (c) => c.kvm.snapshots.delete(id, recordId, { idempotencyKey: "snapshot-delete-1" }) },
+    { name: "kvm.snapshots.rollback", method: "POST", path: `/v1/kvm/instances/${id}/snapshots/rollback`, body: { snapshotId: recordId }, invoke: (c) => c.kvm.snapshots.rollback(id, recordId, { idempotencyKey: "snapshot-rollback-1" }) },
   ];
 
   for (const call of calls) {
@@ -72,7 +82,7 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
       if (call.body !== undefined) expect(await request.json(), call.name).toEqual(call.body);
     }
   }
-  expect(calls).toHaveLength(32);
+  expect(calls).toHaveLength(42);
 });
 
 test("preserves structured API errors for SDK callers", async () => {

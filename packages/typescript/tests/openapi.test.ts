@@ -9,7 +9,7 @@ const expectedOperations = [
   ["PUT", "/v1/domains/{domainId}/auto-renew"], ["PUT", "/v1/domains/{domainId}/nameservers"],
   ["GET", "/v1/email/services"], ["POST", "/v1/email/services/{serviceId}/provision"], ["POST", "/v1/email/services/{serviceId}/dns/sync"],
   ["GET", "/v1/hosting/services"], ["GET", "/v1/hosting/services/{serviceId}/stats"], ["POST", "/v1/hosting/services/{serviceId}/panel-access"],
-  ["GET", "/v1/lxc/instances"], ["GET", "/v1/lxc/instances/{serviceId}"], ["GET", "/v1/lxc/instances/{serviceId}/metrics"], ["POST", "/v1/lxc/instances/{serviceId}/actions"], ["GET", "/v1/lxc/instances/{serviceId}/snapshots"], ["POST", "/v1/lxc/instances/{serviceId}/snapshots"],
+  ["GET", "/v1/lxc/instances"], ["GET", "/v1/lxc/instances/{serviceId}"], ["GET", "/v1/lxc/instances/{serviceId}/metrics"], ["POST", "/v1/lxc/instances/{serviceId}/actions"], ["GET", "/v1/lxc/instances/{serviceId}/snapshots"], ["POST", "/v1/lxc/instances/{serviceId}/snapshots"], ["POST", "/v1/lxc/instances/{serviceId}/password"], ["POST", "/v1/lxc/instances/{serviceId}/reinstall"], ["POST", "/v1/lxc/instances/{serviceId}/terminal-ticket"], ["PUT", "/v1/lxc/instances/{serviceId}/auto-renew"], ["PUT", "/v1/lxc/instances/{serviceId}/billing-period"],
   ["GET", "/v1/kvm/instances"], ["GET", "/v1/kvm/instances/{serviceId}"], ["POST", "/v1/kvm/instances/{serviceId}/actions"],
   ["PUT", "/v1/kvm/instances/{serviceId}/auto-renew"], ["GET", "/v1/kvm/instances/{serviceId}/snapshots"],
   ["POST", "/v1/kvm/instances/{serviceId}/snapshots"], ["PATCH", "/v1/kvm/instances/{serviceId}/snapshots/{snapshotId}"],

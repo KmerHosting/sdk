@@ -38,6 +38,20 @@ $calls = [
     ['hosting.panel', 'POST', "/v1/hosting/services/{$id}/panel-access", static fn () => $client->hosting()->createPanelAccess($id, 'filemanager', 'hosting-panel-1'), ['target' => 'filemanager']],
     ['lxc.all', 'GET', '/v1/lxc/instances', static fn () => $client->lxc()->all(), null],
     ['lxc.get', 'GET', "/v1/lxc/instances/{$id}", static fn () => $client->lxc()->get($id), null],
+    ['lxc.metrics', 'GET', "/v1/lxc/instances/{$id}/metrics", static fn () => $client->lxc()->metrics($id), null],
+    ['lxc.action', 'POST', "/v1/lxc/instances/{$id}/actions", static fn () => $client->lxc()->action($id, 'restart', 'lxc-action-1'), ['action' => 'restart']],
+    ['lxc.snapshots.list', 'GET', "/v1/lxc/instances/{$id}/snapshots", static fn () => $client->lxc()->listSnapshots($id), null],
+    ['lxc.snapshots.mutate', 'POST', "/v1/lxc/instances/{$id}/snapshots", static fn () => $client->lxc()->snapshot($id, 'create', 'before-upgrade', 'lxc-snapshot-1'), ['action' => 'create', 'name' => 'before-upgrade']],
+    ['lxc.password', 'POST', "/v1/lxc/instances/{$id}/password", static fn () => $client->lxc()->changePassword($id, 'Safe-password-123', 'lxc-password-1'), ['password' => 'Safe-password-123']],
+    ['lxc.reinstall', 'POST', "/v1/lxc/instances/{$id}/reinstall", static fn () => $client->lxc()->reinstall($id, 'ubuntu-24.04', 'lxc-reinstall-1'), ['distribution' => 'ubuntu-24.04']],
+    ['lxc.terminal', 'POST', "/v1/lxc/instances/{$id}/terminal-ticket", static fn () => $client->lxc()->createTerminalTicket($id, 'lxc-terminal-1'), []],
+    ['lxc.auto-renew', 'PUT', "/v1/lxc/instances/{$id}/auto-renew", static fn () => $client->lxc()->setAutoRenew($id, true, 'lxc-auto-renew-1'), ['enabled' => true]],
+    ['lxc.billing-period', 'PUT', "/v1/lxc/instances/{$id}/billing-period", static fn () => $client->lxc()->setBillingPeriod($id, 3, 'lxc-billing-1'), ['billingMonths' => 3]],
+    ['kvm.password', 'POST', "/v1/kvm/instances/{$id}/password", static fn () => $client->kvm()->resetPassword($id, 'Safe-password-123', 'kvm-password-1'), ['password' => 'Safe-password-123']],
+    ['kvm.renew', 'POST', "/v1/kvm/instances/{$id}/renew", static fn () => $client->kvm()->renew($id, 3, 'kvm-renew-service-1'), ['billingMonths' => 3]],
+    ['kvm.cancel', 'POST', "/v1/kvm/instances/{$id}/cancel", static fn () => $client->kvm()->cancel($id, 'kvm-cancel-1'), []],
+    ['kvm.keep', 'POST', "/v1/kvm/instances/{$id}/keep-service", static fn () => $client->kvm()->keepService($id, 'kvm-keep-1'), []],
+    ['kvm.rollback', 'POST', "/v1/kvm/instances/{$id}/snapshots/rollback", static fn () => $client->kvm()->snapshots()->rollback($id, $recordId, 'kvm-rollback-1'), ['snapshotId' => $recordId]],
     ['kvm.all', 'GET', '/v1/kvm/instances', static fn () => $client->kvm()->all(), null],
     ['kvm.get', 'GET', "/v1/kvm/instances/{$id}", static fn () => $client->kvm()->get($id), null],
     ['kvm.action', 'POST', "/v1/kvm/instances/{$id}/actions", static fn () => $client->kvm()->action($id, 'restart', 'kvm-action-1'), ['action' => 'restart']],
@@ -65,8 +79,8 @@ foreach ($calls as [$name, $method, $path, $invoke, $expectedBody]) {
     }
 }
 
-if (count($requests) !== 28) {
-    throw new RuntimeException('Expected 28 SDK operations to be tested');
+if (count($requests) !== 42) {
+    throw new RuntimeException('Expected 42 SDK operations to be tested');
 }
 
 $errorClient = new Client('kh_live_test', 'https://example.test', 30, static fn (): array => [
@@ -82,4 +96,4 @@ try {
     }
 }
 
-echo "PHP SDK contract tests passed (25 operations)\n";
+echo "PHP SDK contract tests passed (42 operations)\n";

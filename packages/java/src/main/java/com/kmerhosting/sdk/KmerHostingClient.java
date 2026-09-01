@@ -179,7 +179,13 @@ public final class KmerHostingClient {
     public JsonNode get(String serviceId) { return client.get("/v1/lxc/instances/" + id(serviceId)); }
     public JsonNode metrics(String serviceId) { return client.get("/v1/lxc/instances/" + id(serviceId) + "/metrics"); }
     public JsonNode action(String serviceId, String action, String idempotencyKey) { return client.mutate("POST", "/v1/lxc/instances/" + id(serviceId) + "/actions", Map.of("action", action), idempotencyKey); }
+    public JsonNode listSnapshots(String serviceId) { return client.get("/v1/lxc/instances/" + id(serviceId) + "/snapshots"); }
     public JsonNode snapshot(String serviceId, String action, String name, String idempotencyKey) { return client.mutate("POST", "/v1/lxc/instances/" + id(serviceId) + "/snapshots", Map.of("action", action, "name", name), idempotencyKey); }
+    public JsonNode changePassword(String serviceId, String password, String idempotencyKey) { return client.mutate("POST", "/v1/lxc/instances/" + id(serviceId) + "/password", Map.of("password", password), idempotencyKey); }
+    public JsonNode reinstall(String serviceId, String distribution, String idempotencyKey) { return client.mutate("POST", "/v1/lxc/instances/" + id(serviceId) + "/reinstall", Map.of("distribution", distribution), idempotencyKey); }
+    public JsonNode createTerminalTicket(String serviceId, String idempotencyKey) { return client.mutate("POST", "/v1/lxc/instances/" + id(serviceId) + "/terminal-ticket", Map.of(), idempotencyKey); }
+    public JsonNode setAutoRenew(String serviceId, boolean enabled, String idempotencyKey) { return client.mutate("PUT", "/v1/lxc/instances/" + id(serviceId) + "/auto-renew", Map.of("enabled", enabled), idempotencyKey); }
+    public JsonNode setBillingPeriod(String serviceId, int billingMonths, String idempotencyKey) { return client.mutate("PUT", "/v1/lxc/instances/" + id(serviceId) + "/billing-period", Map.of("billingMonths", billingMonths), idempotencyKey); }
   }
 
   public static final class KvmResource {

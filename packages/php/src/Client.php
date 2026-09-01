@@ -330,9 +330,39 @@ final class LxcResource extends Resource
         return $this->client->mutate('POST', '/v1/lxc/instances/' . $this->id($serviceId) . '/actions', ['action' => $action], $idempotencyKey);
     }
 
+    public function listSnapshots(string $serviceId): array
+    {
+        return $this->client->get('/v1/lxc/instances/' . $this->id($serviceId) . '/snapshots');
+    }
+
     public function snapshot(string $serviceId, string $action, string $name, ?string $idempotencyKey = null): array
     {
         return $this->client->mutate('POST', '/v1/lxc/instances/' . $this->id($serviceId) . '/snapshots', ['action' => $action, 'name' => $name], $idempotencyKey);
+    }
+
+    public function changePassword(string $serviceId, string $password, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/lxc/instances/' . $this->id($serviceId) . '/password', ['password' => $password], $idempotencyKey);
+    }
+
+    public function reinstall(string $serviceId, string $distribution, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/lxc/instances/' . $this->id($serviceId) . '/reinstall', ['distribution' => $distribution], $idempotencyKey);
+    }
+
+    public function createTerminalTicket(string $serviceId, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/lxc/instances/' . $this->id($serviceId) . '/terminal-ticket', [], $idempotencyKey);
+    }
+
+    public function setAutoRenew(string $serviceId, bool $enabled, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('PUT', '/v1/lxc/instances/' . $this->id($serviceId) . '/auto-renew', ['enabled' => $enabled], $idempotencyKey);
+    }
+
+    public function setBillingPeriod(string $serviceId, int $billingMonths, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('PUT', '/v1/lxc/instances/' . $this->id($serviceId) . '/billing-period', ['billingMonths' => $billingMonths], $idempotencyKey);
     }
 }
 
