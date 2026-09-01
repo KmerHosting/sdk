@@ -125,6 +125,9 @@ class _KvmSnapshotsResource(_Resource):
     def delete(self, service_id: str, snapshot_id: str, idempotency_key: Optional[str] = None) -> Json:
         return self._client._mutate("DELETE", f"/v1/kvm/instances/{_encode(service_id)}/snapshots/{_encode(snapshot_id)}", None, idempotency_key)
 
+    def rollback(self, service_id: str, snapshot_id: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/kvm/instances/{_encode(service_id)}/snapshots/rollback", {"snapshotId": snapshot_id}, idempotency_key)
+
 
 class _LxcResource(_Resource):
     def list(self) -> Json:
@@ -159,6 +162,19 @@ class _KvmResource(_Resource):
 
     def set_auto_renew(self, service_id: str, enabled: bool, idempotency_key: Optional[str] = None) -> Json:
         return self._client._mutate("PUT", f"/v1/kvm/instances/{_encode(service_id)}/auto-renew", {"enabled": enabled}, idempotency_key)
+
+    def reset_password(self, service_id: str, password: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/kvm/instances/{_encode(service_id)}/password", {"password": password}, idempotency_key)
+
+    def renew(self, service_id: str, billing_months: Optional[int] = None, idempotency_key: Optional[str] = None) -> Json:
+        body = {"billingMonths": billing_months} if billing_months is not None else {}
+        return self._client._mutate("POST", f"/v1/kvm/instances/{_encode(service_id)}/renew", body, idempotency_key)
+
+    def cancel(self, service_id: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/kvm/instances/{_encode(service_id)}/cancel", {}, idempotency_key)
+
+    def keep_service(self, service_id: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/kvm/instances/{_encode(service_id)}/keep-service", {}, idempotency_key)
 
 
 class KmerHostingClient:

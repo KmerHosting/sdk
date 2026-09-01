@@ -362,6 +362,26 @@ final class KvmResource extends Resource
         return $this->client->mutate('PUT', '/v1/kvm/instances/' . $this->id($serviceId) . '/auto-renew', ['enabled' => $enabled], $idempotencyKey);
     }
 
+    public function resetPassword(string $serviceId, string $password, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/kvm/instances/' . $this->id($serviceId) . '/password', ['password' => $password], $idempotencyKey);
+    }
+
+    public function renew(string $serviceId, ?int $billingMonths = null, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/kvm/instances/' . $this->id($serviceId) . '/renew', $billingMonths === null ? [] : ['billingMonths' => $billingMonths], $idempotencyKey);
+    }
+
+    public function cancel(string $serviceId, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/kvm/instances/' . $this->id($serviceId) . '/cancel', [], $idempotencyKey);
+    }
+
+    public function keepService(string $serviceId, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/kvm/instances/' . $this->id($serviceId) . '/keep-service', [], $idempotencyKey);
+    }
+
     public function snapshots(): KvmSnapshotsResource
     {
         return new KvmSnapshotsResource($this->client);
@@ -392,5 +412,10 @@ final class KvmSnapshotsResource extends Resource
     public function delete(string $serviceId, string $snapshotId, ?string $idempotencyKey = null): array
     {
         return $this->client->mutate('DELETE', '/v1/kvm/instances/' . $this->id($serviceId) . '/snapshots/' . $this->id($snapshotId), null, $idempotencyKey);
+    }
+
+    public function rollback(string $serviceId, string $snapshotId, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/kvm/instances/' . $this->id($serviceId) . '/snapshots/rollback', ['snapshotId' => $snapshotId], $idempotencyKey);
     }
 }

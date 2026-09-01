@@ -193,6 +193,18 @@ public final class KmerHostingClient {
     public JsonNode setAutoRenew(String serviceId, boolean enabled, String idempotencyKey) {
       return client.mutate("PUT", "/v1/kvm/instances/" + id(serviceId) + "/auto-renew", Map.of("enabled", enabled), idempotencyKey);
     }
+    public JsonNode resetPassword(String serviceId, String password, String idempotencyKey) {
+      return client.mutate("POST", "/v1/kvm/instances/" + id(serviceId) + "/password", Map.of("password", password), idempotencyKey);
+    }
+    public JsonNode renew(String serviceId, Integer billingMonths, String idempotencyKey) {
+      return client.mutate("POST", "/v1/kvm/instances/" + id(serviceId) + "/renew", billingMonths == null ? Map.of() : Map.of("billingMonths", billingMonths), idempotencyKey);
+    }
+    public JsonNode cancel(String serviceId, String idempotencyKey) {
+      return client.mutate("POST", "/v1/kvm/instances/" + id(serviceId) + "/cancel", Map.of(), idempotencyKey);
+    }
+    public JsonNode keepService(String serviceId, String idempotencyKey) {
+      return client.mutate("POST", "/v1/kvm/instances/" + id(serviceId) + "/keep-service", Map.of(), idempotencyKey);
+    }
     public SnapshotsResource snapshots() { return new SnapshotsResource(client); }
   }
 
@@ -208,6 +220,9 @@ public final class KmerHostingClient {
     }
     public JsonNode delete(String serviceId, String snapshotId, String idempotencyKey) {
       return client.mutate("DELETE", "/v1/kvm/instances/" + id(serviceId) + "/snapshots/" + id(snapshotId), null, idempotencyKey);
+    }
+    public JsonNode rollback(String serviceId, String snapshotId, String idempotencyKey) {
+      return client.mutate("POST", "/v1/kvm/instances/" + id(serviceId) + "/snapshots/rollback", Map.of("snapshotId", snapshotId), idempotencyKey);
     }
   }
 }
