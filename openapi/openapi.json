@@ -77,10 +77,23 @@
     },
     "/v1/account/api-usage": {
       "get": {
-        "tags": ["Account"],
+        "tags": [
+          "Account"
+        ],
         "summary": "List API request activity",
         "description": "Requires `account:usage:read`. Includes product and non-product operations, status, route, operation id and client IPv4.",
-        "responses": { "200": { "description": "API usage", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } } } }
+        "responses": {
+          "200": {
+            "description": "API usage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/services": {
@@ -1071,6 +1084,254 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/v1/lxc/instances/{serviceId}/metrics": {
+      "get": {
+        "tags": [
+          "LXC"
+        ],
+        "summary": "Get LXC metrics for the last 24 hours",
+        "description": "Requires `lxc:read`.",
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "serviceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "LXC metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/lxc/instances/{serviceId}/actions": {
+      "post": {
+        "tags": [
+          "LXC"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "serviceId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "summary": "Control an LXC instance",
+        "description": "Requires the `lxc:power:write` scope and a unique `Idempotency-Key` header.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "action"
+                ],
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "start",
+                      "restart",
+                      "freeze",
+                      "stop"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/lxc/instances/{serviceId}/snapshots": {
+      "get": {
+        "tags": [
+          "LXC"
+        ],
+        "summary": "List LXC snapshots",
+        "description": "Requires `lxc:read`.",
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "serviceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "LXC snapshots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "LXC"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "serviceId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "summary": "Create, delete or restore an LXC snapshot",
+        "description": "Requires the `lxc:snapshots:write` scope and a unique `Idempotency-Key` header.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "action",
+                  "name"
+                ],
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "create",
+                      "delete",
+                      "restore"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]{0,47}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
           }
         }
       }

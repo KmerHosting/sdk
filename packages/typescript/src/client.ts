@@ -81,6 +81,12 @@ export class KmerHostingClient {
   readonly lxc = {
     list: (options?: RequestOptions) => this.request("GET", "/v1/lxc/instances", undefined, options),
     get: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/lxc/instances/${encode(serviceId)}`, undefined, options),
+    metrics: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/lxc/instances/${encode(serviceId)}/metrics`, undefined, options),
+    action: (serviceId: string, action: "start" | "restart" | "freeze" | "stop", options?: MutationOptions) => this.mutate("POST", `/v1/lxc/instances/${encode(serviceId)}/actions`, { action }, options),
+    snapshots: {
+      list: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/lxc/instances/${encode(serviceId)}/snapshots`, undefined, options),
+      mutate: (serviceId: string, action: "create" | "delete" | "restore", name: string, options?: MutationOptions) => this.mutate("POST", `/v1/lxc/instances/${encode(serviceId)}/snapshots`, { action, name }, options),
+    },
   };
 
   readonly kvm = {

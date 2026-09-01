@@ -177,6 +177,9 @@ public final class KmerHostingClient {
     LxcResource(KmerHostingClient client) { this.client = client; }
     public JsonNode list() { return client.get("/v1/lxc/instances"); }
     public JsonNode get(String serviceId) { return client.get("/v1/lxc/instances/" + id(serviceId)); }
+    public JsonNode metrics(String serviceId) { return client.get("/v1/lxc/instances/" + id(serviceId) + "/metrics"); }
+    public JsonNode action(String serviceId, String action, String idempotencyKey) { return client.mutate("POST", "/v1/lxc/instances/" + id(serviceId) + "/actions", Map.of("action", action), idempotencyKey); }
+    public JsonNode snapshot(String serviceId, String action, String name, String idempotencyKey) { return client.mutate("POST", "/v1/lxc/instances/" + id(serviceId) + "/snapshots", Map.of("action", action, "name", name), idempotencyKey); }
   }
 
   public static final class KvmResource {

@@ -319,6 +319,21 @@ final class LxcResource extends Resource
     {
         return $this->client->get('/v1/lxc/instances/' . $this->id($serviceId));
     }
+
+    public function metrics(string $serviceId): array
+    {
+        return $this->client->get('/v1/lxc/instances/' . $this->id($serviceId) . '/metrics');
+    }
+
+    public function action(string $serviceId, string $action, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/lxc/instances/' . $this->id($serviceId) . '/actions', ['action' => $action], $idempotencyKey);
+    }
+
+    public function snapshot(string $serviceId, string $action, string $name, ?string $idempotencyKey = null): array
+    {
+        return $this->client->mutate('POST', '/v1/lxc/instances/' . $this->id($serviceId) . '/snapshots', ['action' => $action, 'name' => $name], $idempotencyKey);
+    }
 }
 
 final class KvmResource extends Resource

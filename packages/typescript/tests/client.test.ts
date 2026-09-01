@@ -45,6 +45,10 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
     { name: "hosting.createPanelAccess", method: "POST", path: `/v1/hosting/services/${id}/panel-access`, body: { target: "filemanager" }, invoke: (c) => c.hosting.createPanelAccess(id, "filemanager", { idempotencyKey: "hosting-panel-1" }) },
     { name: "lxc.list", method: "GET", path: "/v1/lxc/instances", invoke: (c) => c.lxc.list() },
     { name: "lxc.get", method: "GET", path: `/v1/lxc/instances/${id}`, invoke: (c) => c.lxc.get(id) },
+    { name: "lxc.metrics", method: "GET", path: `/v1/lxc/instances/${id}/metrics`, invoke: (c) => c.lxc.metrics(id) },
+    { name: "lxc.action", method: "POST", path: `/v1/lxc/instances/${id}/actions`, body: { action: "restart" }, invoke: (c) => c.lxc.action(id, "restart", { idempotencyKey: "lxc-action-1" }) },
+    { name: "lxc.snapshots.list", method: "GET", path: `/v1/lxc/instances/${id}/snapshots`, invoke: (c) => c.lxc.snapshots.list(id) },
+    { name: "lxc.snapshots.mutate", method: "POST", path: `/v1/lxc/instances/${id}/snapshots`, body: { action: "create", name: "before-upgrade" }, invoke: (c) => c.lxc.snapshots.mutate(id, "create", "before-upgrade", { idempotencyKey: "lxc-snapshot-1" }) },
     { name: "kvm.list", method: "GET", path: "/v1/kvm/instances", invoke: (c) => c.kvm.list() },
     { name: "kvm.get", method: "GET", path: `/v1/kvm/instances/${id}`, invoke: (c) => c.kvm.get(id) },
     { name: "kvm.action", method: "POST", path: `/v1/kvm/instances/${id}/actions`, body: { action: "restart" }, invoke: (c) => c.kvm.action(id, "restart", { idempotencyKey: "kvm-action-1" }) },
@@ -68,7 +72,7 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
       if (call.body !== undefined) expect(await request.json(), call.name).toEqual(call.body);
     }
   }
-  expect(calls).toHaveLength(28);
+  expect(calls).toHaveLength(32);
 });
 
 test("preserves structured API errors for SDK callers", async () => {

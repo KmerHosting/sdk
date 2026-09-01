@@ -133,6 +133,15 @@ class _LxcResource(_Resource):
     def get(self, service_id: str) -> Json:
         return self._client._request("GET", f"/v1/lxc/instances/{_encode(service_id)}")
 
+    def metrics(self, service_id: str) -> Json:
+        return self._client._request("GET", f"/v1/lxc/instances/{_encode(service_id)}/metrics")
+
+    def action(self, service_id: str, action: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/lxc/instances/{_encode(service_id)}/actions", {"action": action}, idempotency_key)
+
+    def snapshot(self, service_id: str, action: str, name: str, idempotency_key: Optional[str] = None) -> Json:
+        return self._client._mutate("POST", f"/v1/lxc/instances/{_encode(service_id)}/snapshots", {"action": action, "name": name}, idempotency_key)
+
 
 class _KvmResource(_Resource):
     def __init__(self, client: "KmerHostingClient") -> None:
