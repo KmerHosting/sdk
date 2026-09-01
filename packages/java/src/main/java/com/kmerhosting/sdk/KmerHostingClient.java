@@ -111,6 +111,7 @@ public final class KmerHostingClient {
     private final KmerHostingClient client;
     AccountResource(KmerHostingClient client) { this.client = client; }
     public JsonNode get() { return client.get("/v1/account"); }
+    public JsonNode apiUsage() { return client.get("/v1/account/api-usage"); }
   }
 
   public static final class ServicesResource {

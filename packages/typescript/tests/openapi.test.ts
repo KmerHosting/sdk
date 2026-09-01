@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 
 const expectedOperations = [
-  ["GET", "/v1/account"],
+  ["GET", "/v1/account"], ["GET", "/v1/account/api-usage"],
   ["GET", "/v1/services"], ["GET", "/v1/services/{serviceId}"],
   ["GET", "/v1/domains"], ["GET", "/v1/domains/{domainId}"],
   ["GET", "/v1/domains/{domainId}/dns"], ["POST", "/v1/domains/{domainId}/dns"],

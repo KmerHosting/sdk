@@ -182,6 +182,12 @@ final class AccountResource extends Resource
     {
         return $this->client->get('/v1/account');
     }
+
+    /** @return array<string, mixed> */
+    public function apiUsage(): array
+    {
+        return $this->client->get('/v1/account/api-usage');
+    }
 }
 
 final class ServicesResource extends Resource

@@ -26,6 +26,7 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
 
   const calls: Call[] = [
     { name: "account.get", method: "GET", path: "/v1/account", invoke: (c) => c.account.get() },
+    { name: "account.apiUsage", method: "GET", path: "/v1/account/api-usage", invoke: (c) => c.account.apiUsage() },
     { name: "services.list", method: "GET", path: "/v1/services", invoke: (c) => c.services.list() },
     { name: "services.get", method: "GET", path: `/v1/services/${id}`, invoke: (c) => c.services.get(id) },
     { name: "domains.list", method: "GET", path: "/v1/domains", invoke: (c) => c.domains.list() },
@@ -67,7 +68,7 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
       if (call.body !== undefined) expect(await request.json(), call.name).toEqual(call.body);
     }
   }
-  expect(calls).toHaveLength(27);
+  expect(calls).toHaveLength(28);
 });
 
 test("preserves structured API errors for SDK callers", async () => {

@@ -50,6 +50,7 @@ class KmerHostingClientTest {
 
       List<Operation> operations = List.of(
           new Operation("account.get", "GET", "/v1/account", () -> client.account().get(), null),
+          new Operation("account.apiUsage", "GET", "/v1/account/api-usage", () -> client.account().apiUsage(), null),
           new Operation("services.list", "GET", "/v1/services", () -> client.services().list(), null),
           new Operation("services.get", "GET", "/v1/services/" + ID, () -> client.services().get(ID), null),
           new Operation("domains.list", "GET", "/v1/domains", () -> client.domains().list(), null),
@@ -90,7 +91,7 @@ class KmerHostingClientTest {
         }
         if (operation.bodyPart() != null) assertTrue(request.contains(operation.bodyPart()), () -> operation.name() + " request=" + request);
       }
-      assertEquals(27, requests.size());
+      assertEquals(28, requests.size());
 
       errorMode.set(true);
       KmerHostingApiException error = assertThrows(KmerHostingApiException.class, () -> client.account().get());

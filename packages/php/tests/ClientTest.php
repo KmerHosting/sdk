@@ -19,6 +19,7 @@ $transport = static function (string $method, string $path, ?array $body, array 
 $client = new Client('kh_live_test', 'https://example.test/', 30, $transport);
 $calls = [
     ['account.get', 'GET', '/v1/account', static fn () => $client->account()->get(), null],
+    ['account.apiUsage', 'GET', '/v1/account/api-usage', static fn () => $client->account()->apiUsage(), null],
     ['services.all', 'GET', '/v1/services', static fn () => $client->services()->all(), null],
     ['services.get', 'GET', "/v1/services/{$id}", static fn () => $client->services()->get($id), null],
     ['domains.all', 'GET', '/v1/domains', static fn () => $client->domains()->all(), null],
@@ -64,8 +65,8 @@ foreach ($calls as [$name, $method, $path, $invoke, $expectedBody]) {
     }
 }
 
-if (count($requests) !== 27) {
-    throw new RuntimeException('Expected 27 SDK operations to be tested');
+if (count($requests) !== 28) {
+    throw new RuntimeException('Expected 28 SDK operations to be tested');
 }
 
 $errorClient = new Client('kh_live_test', 'https://example.test', 30, static fn (): array => [

@@ -32,6 +32,7 @@ class ClientTests(unittest.TestCase):
         client = KmerHostingClient(api_key="kh_live_test", base_url="https://example.test/")
         calls = [
             ("account.get", "GET", "/v1/account", lambda: client.account.get(), None),
+            ("account.api_usage", "GET", "/v1/account/api-usage", lambda: client.account.api_usage(), None),
             ("services.list", "GET", "/v1/services", lambda: client.services.list(), None),
             ("services.get", "GET", f"/v1/services/{ID}", lambda: client.services.get(ID), None),
             ("domains.list", "GET", "/v1/domains", lambda: client.domains.list(), None),
@@ -74,7 +75,7 @@ class ClientTests(unittest.TestCase):
                     if expected_body is not None:
                         self.assertEqual(json.loads(request.data.decode()), expected_body)
 
-        self.assertEqual(urlopen.call_count, 27)
+        self.assertEqual(urlopen.call_count, 28)
 
     @patch("kmerhosting.client.urllib.request.urlopen")
     def test_preserves_structured_api_errors(self, urlopen):

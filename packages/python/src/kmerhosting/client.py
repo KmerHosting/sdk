@@ -38,6 +38,9 @@ class _AccountResource(_Resource):
     def get(self) -> Json:
         return self._client._request("GET", "/v1/account")
 
+    def api_usage(self) -> Json:
+        return self._client._request("GET", "/v1/account/api-usage")
+
 
 class _ServicesResource(_Resource):
     def list(self) -> Json:

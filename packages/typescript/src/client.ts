@@ -45,6 +45,7 @@ function newIdempotencyKey(): string {
 export class KmerHostingClient {
   readonly account = {
     get: (options?: RequestOptions) => this.request("GET", "/v1/account", undefined, options),
+    apiUsage: (options?: RequestOptions) => this.request("GET", "/v1/account/api-usage", undefined, options),
   };
 
   readonly services = {

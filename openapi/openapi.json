@@ -75,6 +75,14 @@
         }
       }
     },
+    "/v1/account/api-usage": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "List API request activity",
+        "description": "Requires `account:usage:read`. Includes product and non-product operations, status, route, operation id and client IPv4.",
+        "responses": { "200": { "description": "API usage", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } } } }
+      }
+    },
     "/v1/services": {
       "get": {
         "tags": [
