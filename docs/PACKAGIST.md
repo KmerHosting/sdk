@@ -10,11 +10,11 @@ PHP releases use standard Composer/Packagist tags:
 
 ```text
 v0.1.0
-v0.1.1
+v0.2.0
 v1.0.0
 ```
 
-Do not use `php-v0.1.1`. Packagist derives stable versions from `X.Y.Z` or
+Do not use `php-v0.2.0`. Packagist derives stable versions from `X.Y.Z` or
 `vX.Y.Z` tags; language-specific prefixes are not stable Composer versions.
 
 The other SDK release tags remain package-specific:
@@ -43,6 +43,6 @@ only refreshes an existing package.
 After the package is registered and the PHP checks pass:
 
 ```bash
-git tag -a v0.1.1 -m "release: PHP SDK v0.1.1"
-git push origin v0.1.1
+git tag -a v0.2.0 -m "release: PHP SDK v0.2.0"
+git push origin v0.2.0
 ```

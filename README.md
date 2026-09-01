@@ -33,7 +33,7 @@ Add this dependency to `pom.xml`:
 <dependency>
   <groupId>com.kmerhosting</groupId>
   <artifactId>kmerhosting-sdk</artifactId>
-  <version>0.1.1</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 
@@ -105,7 +105,8 @@ System.out.println(services);
 - Domains and DNS records
 - Email Hosting
 - Shared Hosting
-- LXC VPS resources
+- Read-only LXC instance inventory
+- KVM lifecycle, renewal, and snapshot resources
 - Safe service actions
 
 Every write operation supports idempotency for safe retries.

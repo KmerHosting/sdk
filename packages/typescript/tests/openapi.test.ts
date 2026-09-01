@@ -9,10 +9,11 @@ const expectedOperations = [
   ["PUT", "/v1/domains/{domainId}/auto-renew"], ["PUT", "/v1/domains/{domainId}/nameservers"],
   ["GET", "/v1/email/services"], ["POST", "/v1/email/services/{serviceId}/provision"], ["POST", "/v1/email/services/{serviceId}/dns/sync"],
   ["GET", "/v1/hosting/services"], ["GET", "/v1/hosting/services/{serviceId}/stats"], ["POST", "/v1/hosting/services/{serviceId}/panel-access"],
-  ["GET", "/v1/vps/instances"], ["GET", "/v1/vps/instances/{serviceId}"], ["POST", "/v1/vps/instances/{serviceId}/actions"],
-  ["PUT", "/v1/vps/instances/{serviceId}/auto-renew"], ["GET", "/v1/vps/instances/{serviceId}/snapshots"],
-  ["POST", "/v1/vps/instances/{serviceId}/snapshots"], ["PATCH", "/v1/vps/instances/{serviceId}/snapshots/{snapshotId}"],
-  ["DELETE", "/v1/vps/instances/{serviceId}/snapshots/{snapshotId}"],
+  ["GET", "/v1/lxc/instances"], ["GET", "/v1/lxc/instances/{serviceId}"],
+  ["GET", "/v1/kvm/instances"], ["GET", "/v1/kvm/instances/{serviceId}"], ["POST", "/v1/kvm/instances/{serviceId}/actions"],
+  ["PUT", "/v1/kvm/instances/{serviceId}/auto-renew"], ["GET", "/v1/kvm/instances/{serviceId}/snapshots"],
+  ["POST", "/v1/kvm/instances/{serviceId}/snapshots"], ["PATCH", "/v1/kvm/instances/{serviceId}/snapshots/{snapshotId}"],
+  ["DELETE", "/v1/kvm/instances/{serviceId}/snapshots/{snapshotId}"],
 ] as const;
 
 test("keeps the published OpenAPI document aligned with the SDK surface", async () => {

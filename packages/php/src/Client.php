@@ -49,9 +49,14 @@ final class Client
         return new SharedHostingResource($this);
     }
 
-    public function vps(): VpsResource
+    public function lxc(): LxcResource
     {
-        return new VpsResource($this);
+        return new LxcResource($this);
+    }
+
+    public function kvm(): KvmResource
+    {
+        return new KvmResource($this);
     }
 
     /** @return array<string, mixed> */
@@ -295,61 +300,76 @@ final class SharedHostingResource extends Resource
     }
 }
 
-final class VpsResource extends Resource
+final class LxcResource extends Resource
 {
     /** @return array<string, mixed> */
     public function all(): array
     {
-        return $this->client->get('/v1/vps/instances');
+        return $this->client->get('/v1/lxc/instances');
     }
 
     /** @return array<string, mixed> */
     public function get(string $serviceId): array
     {
-        return $this->client->get('/v1/vps/instances/' . $this->id($serviceId));
+        return $this->client->get('/v1/lxc/instances/' . $this->id($serviceId));
+    }
+}
+
+final class KvmResource extends Resource
+{
+    /** @return array<string, mixed> */
+    public function all(): array
+    {
+        return $this->client->get('/v1/kvm/instances');
+    }
+
+    /** @return array<string, mixed> */
+    public function get(string $serviceId): array
+    {
+        return $this->client->get('/v1/kvm/instances/' . $this->id($serviceId));
     }
 
     /** @return array<string, mixed> */
     public function action(string $serviceId, string $action, ?string $idempotencyKey = null): array
     {
-        return $this->client->mutate('POST', '/v1/vps/instances/' . $this->id($serviceId) . '/actions', ['action' => $action], $idempotencyKey);
+        return $this->client->mutate('POST', '/v1/kvm/instances/' . $this->id($serviceId) . '/actions', ['action' => $action], $idempotencyKey);
     }
 
     /** @return array<string, mixed> */
     public function setAutoRenew(string $serviceId, bool $enabled, ?string $idempotencyKey = null): array
     {
-        return $this->client->mutate('PUT', '/v1/vps/instances/' . $this->id($serviceId) . '/auto-renew', ['enabled' => $enabled], $idempotencyKey);
+        return $this->client->mutate('PUT', '/v1/kvm/instances/' . $this->id($serviceId) . '/auto-renew', ['enabled' => $enabled], $idempotencyKey);
     }
 
-    public function snapshots(): SnapshotsResource
+    public function snapshots(): KvmSnapshotsResource
     {
-        return new SnapshotsResource($this->client);
+        return new KvmSnapshotsResource($this->client);
     }
 }
 
-final class SnapshotsResource extends Resource
+final class KvmSnapshotsResource extends Resource
 {
     /** @return array<string, mixed> */
     public function all(string $serviceId): array
     {
-        return $this->client->get('/v1/vps/instances/' . $this->id($serviceId) . '/snapshots');
+        return $this->client->get('/v1/kvm/instances/' . $this->id($serviceId) . '/snapshots');
     }
 
     /** @param array{name: string, description?: string} $snapshot @return array<string, mixed> */
     public function create(string $serviceId, array $snapshot, ?string $idempotencyKey = null): array
     {
-        return $this->client->mutate('POST', '/v1/vps/instances/' . $this->id($serviceId) . '/snapshots', $snapshot, $idempotencyKey);
+        return $this->client->mutate('POST', '/v1/kvm/instances/' . $this->id($serviceId) . '/snapshots', $snapshot, $idempotencyKey);
     }
 
     /** @param array{name?: string, description?: string} $snapshot @return array<string, mixed> */
     public function update(string $serviceId, string $snapshotId, array $snapshot, ?string $idempotencyKey = null): array
     {
-        return $this->client->mutate('PATCH', '/v1/vps/instances/' . $this->id($serviceId) . '/snapshots/' . $this->id($snapshotId), $snapshot, $idempotencyKey);
+        return $this->client->mutate('PATCH', '/v1/kvm/instances/' . $this->id($serviceId) . '/snapshots/' . $this->id($snapshotId), $snapshot, $idempotencyKey);
     }
 
     /** @return array<string, mixed> */
     public function delete(string $serviceId, string $snapshotId, ?string $idempotencyKey = null): array
     {
-        return $this->client->mutate('DELETE', '/v1/vps/instances/' . $this->id($serviceId) . '/snapshots/' . $this->id($snapshotId), null, $idempotencyKey);
+        return $this->client->mutate('DELETE', '/v1/kvm/instances/' . $this->id($serviceId) . '/snapshots/' . $this->id($snapshotId), null, $idempotencyKey);
     }
 }

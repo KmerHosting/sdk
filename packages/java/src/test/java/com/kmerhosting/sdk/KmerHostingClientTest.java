@@ -66,14 +66,16 @@ class KmerHostingClientTest {
           new Operation("hosting.listServices", "GET", "/v1/hosting/services", () -> client.hosting().listServices(), null),
           new Operation("hosting.stats", "GET", "/v1/hosting/services/" + ID + "/stats", () -> client.hosting().stats(ID), null),
           new Operation("hosting.panelAccess", "POST", "/v1/hosting/services/" + ID + "/panel-access", () -> client.hosting().createPanelAccess(ID, "filemanager", "hosting-panel-1"), "filemanager"),
-          new Operation("vps.list", "GET", "/v1/vps/instances", () -> client.vps().list(), null),
-          new Operation("vps.get", "GET", "/v1/vps/instances/" + ID, () -> client.vps().get(ID), null),
-          new Operation("vps.action", "POST", "/v1/vps/instances/" + ID + "/actions", () -> client.vps().action(ID, VpsAction.RESTART, "vps-action-1"), "restart"),
-          new Operation("vps.autoRenew", "PUT", "/v1/vps/instances/" + ID + "/auto-renew", () -> client.vps().setAutoRenew(ID, true, "vps-renew-1"), "\"enabled\":true"),
-          new Operation("vps.snapshots.list", "GET", "/v1/vps/instances/" + ID + "/snapshots", () -> client.vps().snapshots().list(ID), null),
-          new Operation("vps.snapshots.create", "POST", "/v1/vps/instances/" + ID + "/snapshots", () -> client.vps().snapshots().create(ID, java.util.Map.of("name", "test", "description", "snapshot"), "snapshot-create-1"), "snapshot"),
-          new Operation("vps.snapshots.update", "PATCH", "/v1/vps/instances/" + ID + "/snapshots/" + RECORD_ID, () -> client.vps().snapshots().update(ID, RECORD_ID, java.util.Map.of("name", "renamed"), "snapshot-update-1"), "renamed"),
-          new Operation("vps.snapshots.delete", "DELETE", "/v1/vps/instances/" + ID + "/snapshots/" + RECORD_ID, () -> client.vps().snapshots().delete(ID, RECORD_ID, "snapshot-delete-1"), null)
+          new Operation("lxc.list", "GET", "/v1/lxc/instances", () -> client.lxc().list(), null),
+          new Operation("lxc.get", "GET", "/v1/lxc/instances/" + ID, () -> client.lxc().get(ID), null),
+          new Operation("kvm.list", "GET", "/v1/kvm/instances", () -> client.kvm().list(), null),
+          new Operation("kvm.get", "GET", "/v1/kvm/instances/" + ID, () -> client.kvm().get(ID), null),
+          new Operation("kvm.action", "POST", "/v1/kvm/instances/" + ID + "/actions", () -> client.kvm().action(ID, KvmAction.RESTART, "kvm-action-1"), "restart"),
+          new Operation("kvm.autoRenew", "PUT", "/v1/kvm/instances/" + ID + "/auto-renew", () -> client.kvm().setAutoRenew(ID, true, "kvm-renew-1"), "\"enabled\":true"),
+          new Operation("kvm.snapshots.list", "GET", "/v1/kvm/instances/" + ID + "/snapshots", () -> client.kvm().snapshots().list(ID), null),
+          new Operation("kvm.snapshots.create", "POST", "/v1/kvm/instances/" + ID + "/snapshots", () -> client.kvm().snapshots().create(ID, java.util.Map.of("name", "test", "description", "snapshot"), "snapshot-create-1"), "snapshot"),
+          new Operation("kvm.snapshots.update", "PATCH", "/v1/kvm/instances/" + ID + "/snapshots/" + RECORD_ID, () -> client.kvm().snapshots().update(ID, RECORD_ID, java.util.Map.of("name", "renamed"), "snapshot-update-1"), "renamed"),
+          new Operation("kvm.snapshots.delete", "DELETE", "/v1/kvm/instances/" + ID + "/snapshots/" + RECORD_ID, () -> client.kvm().snapshots().delete(ID, RECORD_ID, "snapshot-delete-1"), null)
       );
 
       for (Operation operation : operations) {
@@ -88,7 +90,7 @@ class KmerHostingClientTest {
         }
         if (operation.bodyPart() != null) assertTrue(request.contains(operation.bodyPart()), () -> operation.name() + " request=" + request);
       }
-      assertEquals(25, requests.size());
+      assertEquals(27, requests.size());
 
       errorMode.set(true);
       KmerHostingApiException error = assertThrows(KmerHostingApiException.class, () -> client.account().get());

@@ -48,14 +48,16 @@ class ClientTests(unittest.TestCase):
             ("hosting.list_services", "GET", "/v1/hosting/services", lambda: client.hosting.list_services(), None),
             ("hosting.stats", "GET", f"/v1/hosting/services/{ID}/stats", lambda: client.hosting.stats(ID), None),
             ("hosting.create_panel_access", "POST", f"/v1/hosting/services/{ID}/panel-access", lambda: client.hosting.create_panel_access(ID, "filemanager", "hosting-panel-1"), {"target": "filemanager"}),
-            ("vps.list", "GET", "/v1/vps/instances", lambda: client.vps.list(), None),
-            ("vps.get", "GET", f"/v1/vps/instances/{ID}", lambda: client.vps.get(ID), None),
-            ("vps.action", "POST", f"/v1/vps/instances/{ID}/actions", lambda: client.vps.action(ID, "restart", "vps-action-1"), {"action": "restart"}),
-            ("vps.set_auto_renew", "PUT", f"/v1/vps/instances/{ID}/auto-renew", lambda: client.vps.set_auto_renew(ID, True, "vps-renew-1"), {"enabled": True}),
-            ("vps.snapshots.list", "GET", f"/v1/vps/instances/{ID}/snapshots", lambda: client.vps.snapshots.list(ID), None),
-            ("vps.snapshots.create", "POST", f"/v1/vps/instances/{ID}/snapshots", lambda: client.vps.snapshots.create(ID, "test", "snapshot", "snapshot-create-1"), {"name": "test", "description": "snapshot"}),
-            ("vps.snapshots.update", "PATCH", f"/v1/vps/instances/{ID}/snapshots/{RECORD_ID}", lambda: client.vps.snapshots.update(ID, RECORD_ID, "renamed", None, "snapshot-update-1"), {"name": "renamed"}),
-            ("vps.snapshots.delete", "DELETE", f"/v1/vps/instances/{ID}/snapshots/{RECORD_ID}", lambda: client.vps.snapshots.delete(ID, RECORD_ID, "snapshot-delete-1"), None),
+            ("lxc.list", "GET", "/v1/lxc/instances", lambda: client.lxc.list(), None),
+            ("lxc.get", "GET", f"/v1/lxc/instances/{ID}", lambda: client.lxc.get(ID), None),
+            ("kvm.list", "GET", "/v1/kvm/instances", lambda: client.kvm.list(), None),
+            ("kvm.get", "GET", f"/v1/kvm/instances/{ID}", lambda: client.kvm.get(ID), None),
+            ("kvm.action", "POST", f"/v1/kvm/instances/{ID}/actions", lambda: client.kvm.action(ID, "restart", "kvm-action-1"), {"action": "restart"}),
+            ("kvm.set_auto_renew", "PUT", f"/v1/kvm/instances/{ID}/auto-renew", lambda: client.kvm.set_auto_renew(ID, True, "kvm-renew-1"), {"enabled": True}),
+            ("kvm.snapshots.list", "GET", f"/v1/kvm/instances/{ID}/snapshots", lambda: client.kvm.snapshots.list(ID), None),
+            ("kvm.snapshots.create", "POST", f"/v1/kvm/instances/{ID}/snapshots", lambda: client.kvm.snapshots.create(ID, "test", "snapshot", "snapshot-create-1"), {"name": "test", "description": "snapshot"}),
+            ("kvm.snapshots.update", "PATCH", f"/v1/kvm/instances/{ID}/snapshots/{RECORD_ID}", lambda: client.kvm.snapshots.update(ID, RECORD_ID, "renamed", None, "snapshot-update-1"), {"name": "renamed"}),
+            ("kvm.snapshots.delete", "DELETE", f"/v1/kvm/instances/{ID}/snapshots/{RECORD_ID}", lambda: client.kvm.snapshots.delete(ID, RECORD_ID, "snapshot-delete-1"), None),
         ]
 
         for name, method, path, invoke, expected_body in calls:
@@ -72,7 +74,7 @@ class ClientTests(unittest.TestCase):
                     if expected_body is not None:
                         self.assertEqual(json.loads(request.data.decode()), expected_body)
 
-        self.assertEqual(urlopen.call_count, 25)
+        self.assertEqual(urlopen.call_count, 27)
 
     @patch("kmerhosting.client.urllib.request.urlopen")
     def test_preserves_structured_api_errors(self, urlopen):
@@ -93,7 +95,7 @@ class ClientTests(unittest.TestCase):
     def test_generates_idempotency_key_when_omitted(self, urlopen):
         urlopen.return_value = FakeResponse()
         client = KmerHostingClient(api_key="kh_live_test", base_url="https://example.test")
-        client.vps.action(ID, "restart")
+        client.kvm.action(ID, "restart")
         self.assertRegex(urlopen.call_args.args[0].get_header("Idempotency-key"), r"^[0-9a-f-]{36}$")
 
     @patch("kmerhosting.client.urllib.request.urlopen")

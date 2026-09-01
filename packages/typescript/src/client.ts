@@ -77,6 +77,11 @@ export class KmerHostingClient {
     createPanelAccess: (serviceId: string, target: "panel" | "filemanager" = "panel", options?: MutationOptions) => this.mutate("POST", `/v1/hosting/services/${encode(serviceId)}/panel-access`, { target }, options),
   };
 
+  readonly lxc = {
+    list: (options?: RequestOptions) => this.request("GET", "/v1/lxc/instances", undefined, options),
+    get: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/lxc/instances/${encode(serviceId)}`, undefined, options),
+  };
+
   readonly kvm = {
     list: (options?: RequestOptions) => this.request("GET", "/v1/kvm/instances", undefined, options),
     get: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/kvm/instances/${encode(serviceId)}`, undefined, options),

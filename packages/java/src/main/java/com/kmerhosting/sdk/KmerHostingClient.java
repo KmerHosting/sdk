@@ -50,7 +50,8 @@ public final class KmerHostingClient {
   public DomainsResource domains() { return new DomainsResource(this); }
   public EmailResource email() { return new EmailResource(this); }
   public HostingResource hosting() { return new HostingResource(this); }
-  public VpsResource vps() { return new VpsResource(this); }
+  public LxcResource lxc() { return new LxcResource(this); }
+  public KvmResource kvm() { return new KvmResource(this); }
 
   JsonNode get(String path) { return request("GET", path, null, null); }
 
@@ -170,16 +171,23 @@ public final class KmerHostingClient {
     }
   }
 
-  public static final class VpsResource {
+  public static final class LxcResource {
     private final KmerHostingClient client;
-    VpsResource(KmerHostingClient client) { this.client = client; }
-    public JsonNode list() { return client.get("/v1/vps/instances"); }
-    public JsonNode get(String serviceId) { return client.get("/v1/vps/instances/" + id(serviceId)); }
-    public JsonNode action(String serviceId, VpsAction action, String idempotencyKey) {
-      return client.mutate("POST", "/v1/vps/instances/" + id(serviceId) + "/actions", Map.of("action", action.value()), idempotencyKey);
+    LxcResource(KmerHostingClient client) { this.client = client; }
+    public JsonNode list() { return client.get("/v1/lxc/instances"); }
+    public JsonNode get(String serviceId) { return client.get("/v1/lxc/instances/" + id(serviceId)); }
+  }
+
+  public static final class KvmResource {
+    private final KmerHostingClient client;
+    KvmResource(KmerHostingClient client) { this.client = client; }
+    public JsonNode list() { return client.get("/v1/kvm/instances"); }
+    public JsonNode get(String serviceId) { return client.get("/v1/kvm/instances/" + id(serviceId)); }
+    public JsonNode action(String serviceId, KvmAction action, String idempotencyKey) {
+      return client.mutate("POST", "/v1/kvm/instances/" + id(serviceId) + "/actions", Map.of("action", action.value()), idempotencyKey);
     }
     public JsonNode setAutoRenew(String serviceId, boolean enabled, String idempotencyKey) {
-      return client.mutate("PUT", "/v1/vps/instances/" + id(serviceId) + "/auto-renew", Map.of("enabled", enabled), idempotencyKey);
+      return client.mutate("PUT", "/v1/kvm/instances/" + id(serviceId) + "/auto-renew", Map.of("enabled", enabled), idempotencyKey);
     }
     public SnapshotsResource snapshots() { return new SnapshotsResource(client); }
   }
@@ -187,15 +195,15 @@ public final class KmerHostingClient {
   public static final class SnapshotsResource {
     private final KmerHostingClient client;
     SnapshotsResource(KmerHostingClient client) { this.client = client; }
-    public JsonNode list(String serviceId) { return client.get("/v1/vps/instances/" + id(serviceId) + "/snapshots"); }
+    public JsonNode list(String serviceId) { return client.get("/v1/kvm/instances/" + id(serviceId) + "/snapshots"); }
     public JsonNode create(String serviceId, Map<String, Object> snapshot, String idempotencyKey) {
-      return client.mutate("POST", "/v1/vps/instances/" + id(serviceId) + "/snapshots", snapshot, idempotencyKey);
+      return client.mutate("POST", "/v1/kvm/instances/" + id(serviceId) + "/snapshots", snapshot, idempotencyKey);
     }
     public JsonNode update(String serviceId, String snapshotId, Map<String, Object> snapshot, String idempotencyKey) {
-      return client.mutate("PATCH", "/v1/vps/instances/" + id(serviceId) + "/snapshots/" + id(snapshotId), snapshot, idempotencyKey);
+      return client.mutate("PATCH", "/v1/kvm/instances/" + id(serviceId) + "/snapshots/" + id(snapshotId), snapshot, idempotencyKey);
     }
     public JsonNode delete(String serviceId, String snapshotId, String idempotencyKey) {
-      return client.mutate("DELETE", "/v1/vps/instances/" + id(serviceId) + "/snapshots/" + id(snapshotId), null, idempotencyKey);
+      return client.mutate("DELETE", "/v1/kvm/instances/" + id(serviceId) + "/snapshots/" + id(snapshotId), null, idempotencyKey);
     }
   }
 }

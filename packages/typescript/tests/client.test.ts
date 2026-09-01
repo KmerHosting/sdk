@@ -42,6 +42,8 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
     { name: "hosting.listServices", method: "GET", path: "/v1/hosting/services", invoke: (c) => c.hosting.listServices() },
     { name: "hosting.stats", method: "GET", path: `/v1/hosting/services/${id}/stats`, invoke: (c) => c.hosting.stats(id) },
     { name: "hosting.createPanelAccess", method: "POST", path: `/v1/hosting/services/${id}/panel-access`, body: { target: "filemanager" }, invoke: (c) => c.hosting.createPanelAccess(id, "filemanager", { idempotencyKey: "hosting-panel-1" }) },
+    { name: "lxc.list", method: "GET", path: "/v1/lxc/instances", invoke: (c) => c.lxc.list() },
+    { name: "lxc.get", method: "GET", path: `/v1/lxc/instances/${id}`, invoke: (c) => c.lxc.get(id) },
     { name: "kvm.list", method: "GET", path: "/v1/kvm/instances", invoke: (c) => c.kvm.list() },
     { name: "kvm.get", method: "GET", path: `/v1/kvm/instances/${id}`, invoke: (c) => c.kvm.get(id) },
     { name: "kvm.action", method: "POST", path: `/v1/kvm/instances/${id}/actions`, body: { action: "restart" }, invoke: (c) => c.kvm.action(id, "restart", { idempotencyKey: "kvm-action-1" }) },
@@ -65,7 +67,7 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
       if (call.body !== undefined) expect(await request.json(), call.name).toEqual(call.body);
     }
   }
-  expect(calls).toHaveLength(25);
+  expect(calls).toHaveLength(27);
 });
 
 test("preserves structured API errors for SDK callers", async () => {

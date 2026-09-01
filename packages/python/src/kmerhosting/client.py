@@ -101,15 +101,15 @@ class _HostingResource(_Resource):
         return self._client._mutate("POST", f"/v1/hosting/services/{_encode(service_id)}/panel-access", {"target": target}, idempotency_key)
 
 
-class _SnapshotsResource(_Resource):
+class _KvmSnapshotsResource(_Resource):
     def list(self, service_id: str) -> Json:
-        return self._client._request("GET", f"/v1/vps/instances/{_encode(service_id)}/snapshots")
+        return self._client._request("GET", f"/v1/kvm/instances/{_encode(service_id)}/snapshots")
 
     def create(self, service_id: str, name: str, description: Optional[str] = None, idempotency_key: Optional[str] = None) -> Json:
         body: dict[str, Any] = {"name": name}
         if description is not None:
             body["description"] = description
-        return self._client._mutate("POST", f"/v1/vps/instances/{_encode(service_id)}/snapshots", body, idempotency_key)
+        return self._client._mutate("POST", f"/v1/kvm/instances/{_encode(service_id)}/snapshots", body, idempotency_key)
 
     def update(self, service_id: str, snapshot_id: str, name: Optional[str] = None, description: Optional[str] = None, idempotency_key: Optional[str] = None) -> Json:
         body: dict[str, Any] = {}
@@ -117,28 +117,36 @@ class _SnapshotsResource(_Resource):
             body["name"] = name
         if description is not None:
             body["description"] = description
-        return self._client._mutate("PATCH", f"/v1/vps/instances/{_encode(service_id)}/snapshots/{_encode(snapshot_id)}", body, idempotency_key)
+        return self._client._mutate("PATCH", f"/v1/kvm/instances/{_encode(service_id)}/snapshots/{_encode(snapshot_id)}", body, idempotency_key)
 
     def delete(self, service_id: str, snapshot_id: str, idempotency_key: Optional[str] = None) -> Json:
-        return self._client._mutate("DELETE", f"/v1/vps/instances/{_encode(service_id)}/snapshots/{_encode(snapshot_id)}", None, idempotency_key)
+        return self._client._mutate("DELETE", f"/v1/kvm/instances/{_encode(service_id)}/snapshots/{_encode(snapshot_id)}", None, idempotency_key)
 
 
-class _VpsResource(_Resource):
-    def __init__(self, client: "KmerHostingClient") -> None:
-        super().__init__(client)
-        self.snapshots = _SnapshotsResource(client)
-
+class _LxcResource(_Resource):
     def list(self) -> Json:
-        return self._client._request("GET", "/v1/vps/instances")
+        return self._client._request("GET", "/v1/lxc/instances")
 
     def get(self, service_id: str) -> Json:
-        return self._client._request("GET", f"/v1/vps/instances/{_encode(service_id)}")
+        return self._client._request("GET", f"/v1/lxc/instances/{_encode(service_id)}")
+
+
+class _KvmResource(_Resource):
+    def __init__(self, client: "KmerHostingClient") -> None:
+        super().__init__(client)
+        self.snapshots = _KvmSnapshotsResource(client)
+
+    def list(self) -> Json:
+        return self._client._request("GET", "/v1/kvm/instances")
+
+    def get(self, service_id: str) -> Json:
+        return self._client._request("GET", f"/v1/kvm/instances/{_encode(service_id)}")
 
     def action(self, service_id: str, action: str, idempotency_key: Optional[str] = None) -> Json:
-        return self._client._mutate("POST", f"/v1/vps/instances/{_encode(service_id)}/actions", {"action": action}, idempotency_key)
+        return self._client._mutate("POST", f"/v1/kvm/instances/{_encode(service_id)}/actions", {"action": action}, idempotency_key)
 
     def set_auto_renew(self, service_id: str, enabled: bool, idempotency_key: Optional[str] = None) -> Json:
-        return self._client._mutate("PUT", f"/v1/vps/instances/{_encode(service_id)}/auto-renew", {"enabled": enabled}, idempotency_key)
+        return self._client._mutate("PUT", f"/v1/kvm/instances/{_encode(service_id)}/auto-renew", {"enabled": enabled}, idempotency_key)
 
 
 class KmerHostingClient:
@@ -155,7 +163,8 @@ class KmerHostingClient:
         self.domains = _DomainsResource(self)
         self.email = _EmailResource(self)
         self.hosting = _HostingResource(self)
-        self.vps = _VpsResource(self)
+        self.lxc = _LxcResource(self)
+        self.kvm = _KvmResource(self)
 
     def _mutate(self, method: str, path: str, body: Optional[Mapping[str, Any]], idempotency_key: Optional[str]) -> Json:
         return self._request(method, path, body, idempotency_key or str(uuid.uuid4()))

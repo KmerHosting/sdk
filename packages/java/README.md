@@ -4,7 +4,7 @@
 <dependency>
   <groupId>com.kmerhosting</groupId>
   <artifactId>kmerhosting-sdk</artifactId>
-  <version>0.1.1</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 

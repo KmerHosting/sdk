@@ -33,7 +33,10 @@
       "name": "Shared Hosting"
     },
     {
-      "name": "LXC VPS"
+      "name": "LXC"
+    },
+    {
+      "name": "KVM"
     }
   ],
   "paths": {
@@ -897,8 +900,8 @@
         "tags": [
           "Shared Hosting"
         ],
-        "summary": "Get DirectAdmin service statistics",
-        "description": "Requires `hosting:read`. Only DirectAdmin services currently support detailed statistics.",
+        "summary": "Get provider-neutral service statistics",
+        "description": "Requires `hosting:read`. DirectAdmin and cPanel are selected automatically.",
         "parameters": [
           {
             "in": "path",
@@ -1011,16 +1014,16 @@
         }
       }
     },
-    "/v1/vps/instances": {
+    "/v1/lxc/instances": {
       "get": {
         "tags": [
-          "LXC VPS"
+          "LXC"
         ],
-        "summary": "List owned LXC VPS instances",
-        "description": "Requires `vps:read`.",
+        "summary": "List owned LXC instances",
+        "description": "Requires `lxc:read`.",
         "responses": {
           "200": {
-            "description": "VPS instances",
+            "description": "LXC instances",
             "content": {
               "application/json": {
                 "schema": {
@@ -1032,13 +1035,13 @@
         }
       }
     },
-    "/v1/vps/instances/{serviceId}": {
+    "/v1/lxc/instances/{serviceId}": {
       "get": {
         "tags": [
-          "LXC VPS"
+          "LXC"
         ],
-        "summary": "Get VPS details",
-        "description": "Requires `vps:read`.",
+        "summary": "Get LXC instance details",
+        "description": "Requires `lxc:read`.",
         "parameters": [
           {
             "in": "path",
@@ -1052,7 +1055,7 @@
         ],
         "responses": {
           "200": {
-            "description": "VPS details",
+            "description": "LXC instance",
             "content": {
               "application/json": {
                 "schema": {
@@ -1064,10 +1067,63 @@
         }
       }
     },
-    "/v1/vps/instances/{serviceId}/actions": {
+    "/v1/kvm/instances": {
+      "get": {
+        "tags": [
+          "KVM"
+        ],
+        "summary": "List owned KVM instances",
+        "description": "Requires `kvm:read`.",
+        "responses": {
+          "200": {
+            "description": "KVM instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/kvm/instances/{serviceId}": {
+      "get": {
+        "tags": [
+          "KVM"
+        ],
+        "summary": "Get KVM details",
+        "description": "Requires `kvm:read`.",
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "serviceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "KVM details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/kvm/instances/{serviceId}/actions": {
       "post": {
         "tags": [
-          "LXC VPS"
+          "KVM"
         ],
         "parameters": [
           {
@@ -1083,8 +1139,8 @@
             "$ref": "#/components/parameters/IdempotencyKey"
           }
         ],
-        "summary": "Start, stop, shut down or restart a VPS",
-        "description": "Requires the `vps:write` scope and a unique `Idempotency-Key` header.",
+        "summary": "Control a KVM instance",
+        "description": "Requires the `kvm:power:write` scope and a unique `Idempotency-Key` header.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1155,10 +1211,10 @@
         }
       }
     },
-    "/v1/vps/instances/{serviceId}/auto-renew": {
+    "/v1/kvm/instances/{serviceId}/auto-renew": {
       "put": {
         "tags": [
-          "LXC VPS"
+          "KVM"
         ],
         "parameters": [
           {
@@ -1174,8 +1230,8 @@
             "$ref": "#/components/parameters/IdempotencyKey"
           }
         ],
-        "summary": "Set VPS auto-renew",
-        "description": "Requires the `vps:write` scope and a unique `Idempotency-Key` header.",
+        "summary": "Set KVM auto-renew",
+        "description": "Requires the `kvm:subscription:write` scope and a unique `Idempotency-Key` header.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1240,13 +1296,13 @@
         }
       }
     },
-    "/v1/vps/instances/{serviceId}/snapshots": {
+    "/v1/kvm/instances/{serviceId}/snapshots": {
       "get": {
         "tags": [
-          "LXC VPS"
+          "KVM"
         ],
-        "summary": "List VPS snapshots",
-        "description": "Requires `vps:read`.",
+        "summary": "List KVM snapshots",
+        "description": "Requires `kvm:read`.",
         "parameters": [
           {
             "in": "path",
@@ -1273,7 +1329,7 @@
       },
       "post": {
         "tags": [
-          "LXC VPS"
+          "KVM"
         ],
         "parameters": [
           {
@@ -1289,8 +1345,8 @@
             "$ref": "#/components/parameters/IdempotencyKey"
           }
         ],
-        "summary": "Create a VPS snapshot",
-        "description": "Requires the `vps:snapshots:write` scope and a unique `Idempotency-Key` header.",
+        "summary": "Create a KVM snapshot",
+        "description": "Requires the `kvm:snapshots:write` scope and a unique `Idempotency-Key` header.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1362,10 +1418,10 @@
         }
       }
     },
-    "/v1/vps/instances/{serviceId}/snapshots/{snapshotId}": {
+    "/v1/kvm/instances/{serviceId}/snapshots/{snapshotId}": {
       "patch": {
         "tags": [
-          "LXC VPS"
+          "KVM"
         ],
         "parameters": [
           {
@@ -1390,8 +1446,8 @@
             "$ref": "#/components/parameters/IdempotencyKey"
           }
         ],
-        "summary": "Update a VPS snapshot",
-        "description": "Requires the `vps:snapshots:write` scope and a unique `Idempotency-Key` header.",
+        "summary": "Update a KVM snapshot",
+        "description": "Requires the `kvm:snapshots:write` scope and a unique `Idempotency-Key` header.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1462,7 +1518,7 @@
       },
       "delete": {
         "tags": [
-          "LXC VPS"
+          "KVM"
         ],
         "parameters": [
           {
@@ -1487,8 +1543,8 @@
             "$ref": "#/components/parameters/IdempotencyKey"
           }
         ],
-        "summary": "Delete a VPS snapshot",
-        "description": "Requires `vps:snapshots:write` and a unique `Idempotency-Key` header.",
+        "summary": "Delete a KVM snapshot",
+        "description": "Requires `kvm:snapshots:write` and a unique `Idempotency-Key` header.",
         "responses": {
           "200": {
             "description": "Snapshot deleted",
@@ -1512,8 +1568,8 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "KMERHOSTING_API_KEY",
-        "description": "`Authorization: Bearer $KMERHOSTING_API_KEY`"
+        "bearerFormat": "KMERHOSTING_API_KEY or OAuth access token",
+        "description": "`Authorization: Bearer kh_live_...` or a user-scoped `kh_oauth_...` token."
       }
     },
     "parameters": {

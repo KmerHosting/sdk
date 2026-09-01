@@ -35,14 +35,16 @@ $calls = [
     ['hosting.all', 'GET', '/v1/hosting/services', static fn () => $client->hosting()->all(), null],
     ['hosting.stats', 'GET', "/v1/hosting/services/{$id}/stats", static fn () => $client->hosting()->stats($id), null],
     ['hosting.panel', 'POST', "/v1/hosting/services/{$id}/panel-access", static fn () => $client->hosting()->createPanelAccess($id, 'filemanager', 'hosting-panel-1'), ['target' => 'filemanager']],
-    ['vps.all', 'GET', '/v1/vps/instances', static fn () => $client->vps()->all(), null],
-    ['vps.get', 'GET', "/v1/vps/instances/{$id}", static fn () => $client->vps()->get($id), null],
-    ['vps.action', 'POST', "/v1/vps/instances/{$id}/actions", static fn () => $client->vps()->action($id, 'restart', 'vps-action-1'), ['action' => 'restart']],
-    ['vps.autoRenew', 'PUT', "/v1/vps/instances/{$id}/auto-renew", static fn () => $client->vps()->setAutoRenew($id, true, 'vps-renew-1'), ['enabled' => true]],
-    ['vps.snapshots.all', 'GET', "/v1/vps/instances/{$id}/snapshots", static fn () => $client->vps()->snapshots()->all($id), null],
-    ['vps.snapshots.create', 'POST', "/v1/vps/instances/{$id}/snapshots", static fn () => $client->vps()->snapshots()->create($id, ['name' => 'test', 'description' => 'snapshot'], 'snapshot-create-1'), ['name' => 'test', 'description' => 'snapshot']],
-    ['vps.snapshots.update', 'PATCH', "/v1/vps/instances/{$id}/snapshots/{$recordId}", static fn () => $client->vps()->snapshots()->update($id, $recordId, ['name' => 'renamed'], 'snapshot-update-1'), ['name' => 'renamed']],
-    ['vps.snapshots.delete', 'DELETE', "/v1/vps/instances/{$id}/snapshots/{$recordId}", static fn () => $client->vps()->snapshots()->delete($id, $recordId, 'snapshot-delete-1'), null],
+    ['lxc.all', 'GET', '/v1/lxc/instances', static fn () => $client->lxc()->all(), null],
+    ['lxc.get', 'GET', "/v1/lxc/instances/{$id}", static fn () => $client->lxc()->get($id), null],
+    ['kvm.all', 'GET', '/v1/kvm/instances', static fn () => $client->kvm()->all(), null],
+    ['kvm.get', 'GET', "/v1/kvm/instances/{$id}", static fn () => $client->kvm()->get($id), null],
+    ['kvm.action', 'POST', "/v1/kvm/instances/{$id}/actions", static fn () => $client->kvm()->action($id, 'restart', 'kvm-action-1'), ['action' => 'restart']],
+    ['kvm.autoRenew', 'PUT', "/v1/kvm/instances/{$id}/auto-renew", static fn () => $client->kvm()->setAutoRenew($id, true, 'kvm-renew-1'), ['enabled' => true]],
+    ['kvm.snapshots.all', 'GET', "/v1/kvm/instances/{$id}/snapshots", static fn () => $client->kvm()->snapshots()->all($id), null],
+    ['kvm.snapshots.create', 'POST', "/v1/kvm/instances/{$id}/snapshots", static fn () => $client->kvm()->snapshots()->create($id, ['name' => 'test', 'description' => 'snapshot'], 'snapshot-create-1'), ['name' => 'test', 'description' => 'snapshot']],
+    ['kvm.snapshots.update', 'PATCH', "/v1/kvm/instances/{$id}/snapshots/{$recordId}", static fn () => $client->kvm()->snapshots()->update($id, $recordId, ['name' => 'renamed'], 'snapshot-update-1'), ['name' => 'renamed']],
+    ['kvm.snapshots.delete', 'DELETE', "/v1/kvm/instances/{$id}/snapshots/{$recordId}", static fn () => $client->kvm()->snapshots()->delete($id, $recordId, 'snapshot-delete-1'), null],
 ];
 
 foreach ($calls as [$name, $method, $path, $invoke, $expectedBody]) {
@@ -62,8 +64,8 @@ foreach ($calls as [$name, $method, $path, $invoke, $expectedBody]) {
     }
 }
 
-if (count($requests) !== 25) {
-    throw new RuntimeException('Expected 25 SDK operations to be tested');
+if (count($requests) !== 27) {
+    throw new RuntimeException('Expected 27 SDK operations to be tested');
 }
 
 $errorClient = new Client('kh_live_test', 'https://example.test', 30, static fn (): array => [
