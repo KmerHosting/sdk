@@ -5,5 +5,5 @@ export {
   type ClientOptions,
   type MutationOptions,
   type RequestOptions,
-  type VpsAction,
+  type KvmAction,
 } from "./client.js";

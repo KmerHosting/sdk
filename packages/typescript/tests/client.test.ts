@@ -42,14 +42,14 @@ test("maps every public TypeScript SDK operation to the API contract", async () 
     { name: "hosting.listServices", method: "GET", path: "/v1/hosting/services", invoke: (c) => c.hosting.listServices() },
     { name: "hosting.stats", method: "GET", path: `/v1/hosting/services/${id}/stats`, invoke: (c) => c.hosting.stats(id) },
     { name: "hosting.createPanelAccess", method: "POST", path: `/v1/hosting/services/${id}/panel-access`, body: { target: "filemanager" }, invoke: (c) => c.hosting.createPanelAccess(id, "filemanager", { idempotencyKey: "hosting-panel-1" }) },
-    { name: "vps.list", method: "GET", path: "/v1/vps/instances", invoke: (c) => c.vps.list() },
-    { name: "vps.get", method: "GET", path: `/v1/vps/instances/${id}`, invoke: (c) => c.vps.get(id) },
-    { name: "vps.action", method: "POST", path: `/v1/vps/instances/${id}/actions`, body: { action: "restart" }, invoke: (c) => c.vps.action(id, "restart", { idempotencyKey: "vps-action-1" }) },
-    { name: "vps.setAutoRenew", method: "PUT", path: `/v1/vps/instances/${id}/auto-renew`, body: { enabled: true }, invoke: (c) => c.vps.setAutoRenew(id, true, { idempotencyKey: "vps-renew-1" }) },
-    { name: "vps.snapshots.list", method: "GET", path: `/v1/vps/instances/${id}/snapshots`, invoke: (c) => c.vps.snapshots.list(id) },
-    { name: "vps.snapshots.create", method: "POST", path: `/v1/vps/instances/${id}/snapshots`, body: { name: "test", description: "snapshot" }, invoke: (c) => c.vps.snapshots.create(id, { name: "test", description: "snapshot" }, { idempotencyKey: "snapshot-create-1" }) },
-    { name: "vps.snapshots.update", method: "PATCH", path: `/v1/vps/instances/${id}/snapshots/${recordId}`, body: { name: "renamed" }, invoke: (c) => c.vps.snapshots.update(id, recordId, { name: "renamed" }, { idempotencyKey: "snapshot-update-1" }) },
-    { name: "vps.snapshots.delete", method: "DELETE", path: `/v1/vps/instances/${id}/snapshots/${recordId}`, invoke: (c) => c.vps.snapshots.delete(id, recordId, { idempotencyKey: "snapshot-delete-1" }) },
+    { name: "kvm.list", method: "GET", path: "/v1/kvm/instances", invoke: (c) => c.kvm.list() },
+    { name: "kvm.get", method: "GET", path: `/v1/kvm/instances/${id}`, invoke: (c) => c.kvm.get(id) },
+    { name: "kvm.action", method: "POST", path: `/v1/kvm/instances/${id}/actions`, body: { action: "restart" }, invoke: (c) => c.kvm.action(id, "restart", { idempotencyKey: "kvm-action-1" }) },
+    { name: "kvm.setAutoRenew", method: "PUT", path: `/v1/kvm/instances/${id}/auto-renew`, body: { enabled: true }, invoke: (c) => c.kvm.setAutoRenew(id, true, { idempotencyKey: "kvm-renew-1" }) },
+    { name: "kvm.snapshots.list", method: "GET", path: `/v1/kvm/instances/${id}/snapshots`, invoke: (c) => c.kvm.snapshots.list(id) },
+    { name: "kvm.snapshots.create", method: "POST", path: `/v1/kvm/instances/${id}/snapshots`, body: { name: "test", description: "snapshot" }, invoke: (c) => c.kvm.snapshots.create(id, { name: "test", description: "snapshot" }, { idempotencyKey: "snapshot-create-1" }) },
+    { name: "kvm.snapshots.update", method: "PATCH", path: `/v1/kvm/instances/${id}/snapshots/${recordId}`, body: { name: "renamed" }, invoke: (c) => c.kvm.snapshots.update(id, recordId, { name: "renamed" }, { idempotencyKey: "snapshot-update-1" }) },
+    { name: "kvm.snapshots.delete", method: "DELETE", path: `/v1/kvm/instances/${id}/snapshots/${recordId}`, invoke: (c) => c.kvm.snapshots.delete(id, recordId, { idempotencyKey: "snapshot-delete-1" }) },
   ];
 
   for (const call of calls) {
@@ -94,7 +94,7 @@ test("generates idempotency keys when callers omit them", async () => {
       return Response.json({ data: {}, request_id: "test" }, { status: 202 });
     },
   });
-  await client.vps.action(id, "restart");
+  await client.kvm.action(id, "restart");
   expect(request?.headers.get("Idempotency-Key")).toMatch(/^[0-9a-f-]{36}$/);
 });
 

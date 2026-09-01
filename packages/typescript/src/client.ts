@@ -1,7 +1,7 @@
 export type ApiEnvelope<T = unknown> = { data: T; request_id: string };
 export type RequestOptions = { signal?: AbortSignal };
 export type MutationOptions = RequestOptions & { idempotencyKey?: string };
-export type VpsAction = "start" | "stop" | "shutdown" | "restart";
+export type KvmAction = "start" | "stop" | "shutdown" | "restart";
 
 export type ClientOptions = {
   apiKey?: string;
@@ -77,16 +77,16 @@ export class KmerHostingClient {
     createPanelAccess: (serviceId: string, target: "panel" | "filemanager" = "panel", options?: MutationOptions) => this.mutate("POST", `/v1/hosting/services/${encode(serviceId)}/panel-access`, { target }, options),
   };
 
-  readonly vps = {
-    list: (options?: RequestOptions) => this.request("GET", "/v1/vps/instances", undefined, options),
-    get: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/vps/instances/${encode(serviceId)}`, undefined, options),
-    action: (serviceId: string, action: VpsAction, options?: MutationOptions) => this.mutate("POST", `/v1/vps/instances/${encode(serviceId)}/actions`, { action }, options),
-    setAutoRenew: (serviceId: string, enabled: boolean, options?: MutationOptions) => this.mutate("PUT", `/v1/vps/instances/${encode(serviceId)}/auto-renew`, { enabled }, options),
+  readonly kvm = {
+    list: (options?: RequestOptions) => this.request("GET", "/v1/kvm/instances", undefined, options),
+    get: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/kvm/instances/${encode(serviceId)}`, undefined, options),
+    action: (serviceId: string, action: KvmAction, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/actions`, { action }, options),
+    setAutoRenew: (serviceId: string, enabled: boolean, options?: MutationOptions) => this.mutate("PUT", `/v1/kvm/instances/${encode(serviceId)}/auto-renew`, { enabled }, options),
     snapshots: {
-      list: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/vps/instances/${encode(serviceId)}/snapshots`, undefined, options),
-      create: (serviceId: string, snapshot: { name: string; description?: string }, options?: MutationOptions) => this.mutate("POST", `/v1/vps/instances/${encode(serviceId)}/snapshots`, snapshot, options),
-      update: (serviceId: string, snapshotId: string, snapshot: { name?: string; description?: string }, options?: MutationOptions) => this.mutate("PATCH", `/v1/vps/instances/${encode(serviceId)}/snapshots/${encode(snapshotId)}`, snapshot, options),
-      delete: (serviceId: string, snapshotId: string, options?: MutationOptions) => this.mutate("DELETE", `/v1/vps/instances/${encode(serviceId)}/snapshots/${encode(snapshotId)}`, undefined, options),
+      list: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/kvm/instances/${encode(serviceId)}/snapshots`, undefined, options),
+      create: (serviceId: string, snapshot: { name: string; description?: string }, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/snapshots`, snapshot, options),
+      update: (serviceId: string, snapshotId: string, snapshot: { name?: string; description?: string }, options?: MutationOptions) => this.mutate("PATCH", `/v1/kvm/instances/${encode(serviceId)}/snapshots/${encode(snapshotId)}`, snapshot, options),
+      delete: (serviceId: string, snapshotId: string, options?: MutationOptions) => this.mutate("DELETE", `/v1/kvm/instances/${encode(serviceId)}/snapshots/${encode(snapshotId)}`, undefined, options),
     },
   };
 
