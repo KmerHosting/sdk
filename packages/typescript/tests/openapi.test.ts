@@ -14,6 +14,9 @@ const expectedOperations = [
   ["PUT", "/v1/kvm/instances/{serviceId}/auto-renew"], ["GET", "/v1/kvm/instances/{serviceId}/snapshots"],
   ["POST", "/v1/kvm/instances/{serviceId}/snapshots"], ["PATCH", "/v1/kvm/instances/{serviceId}/snapshots/{snapshotId}"],
   ["DELETE", "/v1/kvm/instances/{serviceId}/snapshots/{snapshotId}"],
+  ["POST", "/v1/kvm/instances/{serviceId}/password"], ["POST", "/v1/kvm/instances/{serviceId}/renew"],
+  ["POST", "/v1/kvm/instances/{serviceId}/cancel"], ["POST", "/v1/kvm/instances/{serviceId}/keep-service"],
+  ["POST", "/v1/kvm/instances/{serviceId}/snapshots/rollback"],
 ] as const;
 
 test("keeps the published OpenAPI document aligned with the SDK surface", async () => {

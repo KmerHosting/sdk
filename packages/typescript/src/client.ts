@@ -94,11 +94,16 @@ export class KmerHostingClient {
     get: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/kvm/instances/${encode(serviceId)}`, undefined, options),
     action: (serviceId: string, action: KvmAction, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/actions`, { action }, options),
     setAutoRenew: (serviceId: string, enabled: boolean, options?: MutationOptions) => this.mutate("PUT", `/v1/kvm/instances/${encode(serviceId)}/auto-renew`, { enabled }, options),
+    resetPassword: (serviceId: string, password: string, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/password`, { password }, options),
+    renew: (serviceId: string, billingMonths?: 1 | 3 | 6 | 12, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/renew`, billingMonths ? { billingMonths } : {}, options),
+    cancel: (serviceId: string, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/cancel`, {}, options),
+    keepService: (serviceId: string, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/keep-service`, {}, options),
     snapshots: {
       list: (serviceId: string, options?: RequestOptions) => this.request("GET", `/v1/kvm/instances/${encode(serviceId)}/snapshots`, undefined, options),
       create: (serviceId: string, snapshot: { name: string; description?: string }, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/snapshots`, snapshot, options),
       update: (serviceId: string, snapshotId: string, snapshot: { name?: string; description?: string }, options?: MutationOptions) => this.mutate("PATCH", `/v1/kvm/instances/${encode(serviceId)}/snapshots/${encode(snapshotId)}`, snapshot, options),
       delete: (serviceId: string, snapshotId: string, options?: MutationOptions) => this.mutate("DELETE", `/v1/kvm/instances/${encode(serviceId)}/snapshots/${encode(snapshotId)}`, undefined, options),
+      rollback: (serviceId: string, snapshotId: string, options?: MutationOptions) => this.mutate("POST", `/v1/kvm/instances/${encode(serviceId)}/snapshots/rollback`, { snapshotId }, options),
     },
   };
 
