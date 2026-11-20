@@ -1,0 +1,3 @@
+# Live API contract the SDKs are generated from
+GET https://api.kmerhosting.com/openapi.json 200 "openapi"
+GET https://api.kmerhosting.com/health 200 "status":"ok"
