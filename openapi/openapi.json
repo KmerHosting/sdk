@@ -3,7 +3,7 @@
   "info": {
     "title": "KmerHosting API",
     "version": "v1",
-    "description": "Public API for resources owned by the authenticated KmerHosting account. Sensitive infrastructure operations require an explicit scope, an IPv4 allowlist and an idempotency key. Provider credentials, purchases and account administration remain unavailable."
+    "description": "KmerHosting API contract. Authenticated account and service operations use api.kmerhosting.com. Public domain availability search remains unauthenticated on domain.kmerhosting.com and is documented here with operation-level servers. Customer ordering and management for Domains, Email Hosting and Shared Hosting are centralized in the KmerHosting Dashboard at dash.kmerhosting.com."
   },
   "servers": [
     {
@@ -25,6 +25,10 @@
     },
     {
       "name": "Domains"
+    },
+    {
+      "name": "Domain Search",
+      "description": "Public, read-only availability and pricing search served from domain.kmerhosting.com. No account or API key is required."
     },
     {
       "name": "Email Hosting"
@@ -50,6 +54,534 @@
           }
         },
         "operationId": "get_health"
+      }
+    },
+    "/api/domain-search": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://domain.kmerhosting.com",
+            "description": "Public domain search service"
+          }
+        ],
+        "security": [],
+        "tags": [
+          "Domain Search"
+        ],
+        "summary": "Check public domain availability",
+        "description": "Unauthenticated public search served from domain.kmerhosting.com. Send one domain with `domain` or `q`, or up to 20 domains with repeated `domain`/`domains` parameters or a comma-separated `domains` value. The allowance is 20 requests per client IP in a rolling 60-second window; one bulk request counts as one request. The legacy Domain web portal UI may redirect users to the Dashboard, but this API endpoint remains stable.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "domain",
+            "description": "A domain to check. Repeat this parameter for a bulk search.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 253,
+              "examples": [
+                "example.com"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "domains",
+            "description": "Comma-, whitespace- or newline-separated domains. Repeat this parameter when useful.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 5099,
+              "examples": [
+                "example.com,example.org,example.cm"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Alias for `domain` for simple integrations.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 253,
+              "examples": [
+                "example.com"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability results and current customer pricing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No valid domain was supplied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The public IP allowance was exceeded. Retry after the supplied delay.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The registrar service is temporarily unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_api_domain_search"
+      },
+      "post": {
+        "servers": [
+          {
+            "url": "https://domain.kmerhosting.com",
+            "description": "Public domain search service"
+          }
+        ],
+        "security": [],
+        "tags": [
+          "Domain Search"
+        ],
+        "summary": "Check public domain availability in bulk",
+        "description": "Unauthenticated public search served from domain.kmerhosting.com. Send an array of up to 20 domains, or one scalar `domain`, `domainName` or `q` value. One bulk request counts as one request against the client IP allowance. The legacy Domain web portal UI may redirect users to the Dashboard, but this API endpoint remains stable.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "domains"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "domains": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 20,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "string",
+                          "minLength": 3,
+                          "maxLength": 253
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "domain"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "domain": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 253
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "domainName"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "domainName": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 253
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "q"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "q": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 253
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Availability results and current customer pricing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No valid domain was supplied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The public IP allowance was exceeded. Retry after the supplied delay.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The registrar service is temporarily unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post_api_domain_search"
+      }
+    },
+    "/api/domain/domain-search-fast": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://domain.kmerhosting.com",
+            "description": "Public domain search service"
+          }
+        ],
+        "security": [],
+        "tags": [
+          "Domain Search"
+        ],
+        "summary": "Check public domain availability",
+        "description": "Unauthenticated public search served from domain.kmerhosting.com. Send one domain with `domain` or `q`, or up to 20 domains with repeated `domain`/`domains` parameters or a comma-separated `domains` value. The allowance is 20 requests per client IP in a rolling 60-second window; one bulk request counts as one request. The legacy Domain web portal UI may redirect users to the Dashboard, but this API endpoint remains stable.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "domain",
+            "description": "A domain to check. Repeat this parameter for a bulk search.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 253,
+              "examples": [
+                "example.com"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "domains",
+            "description": "Comma-, whitespace- or newline-separated domains. Repeat this parameter when useful.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 5099,
+              "examples": [
+                "example.com,example.org,example.cm"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Alias for `domain` for simple integrations.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 253,
+              "examples": [
+                "example.com"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability results and current customer pricing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No valid domain was supplied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The public IP allowance was exceeded. Retry after the supplied delay.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The registrar service is temporarily unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_api_domain_domain_search_fast"
+      },
+      "post": {
+        "servers": [
+          {
+            "url": "https://domain.kmerhosting.com",
+            "description": "Public domain search service"
+          }
+        ],
+        "security": [],
+        "tags": [
+          "Domain Search"
+        ],
+        "summary": "Check public domain availability in bulk",
+        "description": "Unauthenticated public search served from domain.kmerhosting.com. Send an array of up to 20 domains, or one scalar `domain`, `domainName` or `q` value. One bulk request counts as one request against the client IP allowance. The legacy Domain web portal UI may redirect users to the Dashboard, but this API endpoint remains stable.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "domains"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "domains": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 20,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "string",
+                          "minLength": 3,
+                          "maxLength": 253
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "domain"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "domain": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 253
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "domainName"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "domainName": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 253
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "q"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "q": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 253
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Availability results and current customer pricing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No valid domain was supplied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The public IP allowance was exceeded. Retry after the supplied delay.",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The registrar service is temporarily unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicDomainSearchError"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post_api_domain_domain_search_fast"
       }
     },
     "/v1/account": {
@@ -986,7 +1518,7 @@
           }
         ],
         "summary": "Create a temporary hosting panel link",
-        "description": "Requires the `hosting:panel:access` scope and a unique `Idempotency-Key` header.",
+        "description": "Requires the `hosting:panel:access` scope and a unique `Idempotency-Key` header. For Free Hosting, successful panel or File Manager link creation records qualifying activity. An inactivity-suspended Free Hosting service can be automatically reactivated before its deletion deadline; other suspended or terminated services remain unavailable.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1009,7 +1541,7 @@
         },
         "responses": {
           "200": {
-            "description": "Accepted",
+            "description": "Panel access link",
             "content": {
               "application/json": {
                 "schema": {
@@ -1019,7 +1551,7 @@
             }
           },
           "201": {
-            "description": "Accepted",
+            "description": "Panel access link",
             "content": {
               "application/json": {
                 "schema": {
@@ -1029,7 +1561,7 @@
             }
           },
           "202": {
-            "description": "Accepted",
+            "description": "Panel access link",
             "content": {
               "application/json": {
                 "schema": {
@@ -2788,6 +3320,270 @@
                 "format": "uuid"
               }
             }
+          }
+        }
+      },
+      "PublicDomainSearchError": {
+        "type": "object",
+        "required": [
+          "error",
+          "message"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "examples": [
+              "search_rate_limited"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "PublicDomainProviderAttribute": {
+        "type": "object",
+        "required": [
+          "key",
+          "options",
+          "isRequired"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isRequired": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "PublicDomainCatalogPrice": {
+        "type": "object",
+        "required": [
+          "tld",
+          "registration_price_usd",
+          "renewal_price_usd",
+          "transfer_price_usd"
+        ],
+        "properties": {
+          "tld": {
+            "type": "string",
+            "examples": [
+              ".com"
+            ]
+          },
+          "popular": {
+            "type": "boolean"
+          },
+          "is_promo": {
+            "type": "boolean"
+          },
+          "registration_price_usd": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "renewal_price_usd": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "transfer_price_usd": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "restore_price_usd": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "min_years": {
+            "type": "integer"
+          },
+          "max_years": {
+            "type": "integer"
+          },
+          "registration_periods": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "renewal_periods": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "transfer_periods": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "supports_privacy": {
+            "type": "boolean"
+          },
+          "provider_attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicDomainProviderAttribute"
+            }
+          }
+        }
+      },
+      "PublicDomainRegistrarResult": {
+        "type": "object",
+        "required": [
+          "domainName",
+          "available",
+          "isAvailable",
+          "status",
+          "availabilitySource"
+        ],
+        "properties": {
+          "domainName": {
+            "type": "string"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable",
+              "unknown",
+              "unsupported"
+            ]
+          },
+          "isPremium": {
+            "type": "boolean"
+          },
+          "customerPriceUsd": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "availabilitySource": {
+            "type": "string",
+            "enum": [
+              "ote",
+              "production"
+            ]
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "PublicDomainSearchResult": {
+        "type": "object",
+        "required": [
+          "domainName",
+          "registrar",
+          "price"
+        ],
+        "properties": {
+          "domainName": {
+            "type": "string"
+          },
+          "registrar": {
+            "$ref": "#/components/schemas/PublicDomainRegistrarResult"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PublicDomainCatalogPrice"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "PublicDomainSearchResponse": {
+        "type": "object",
+        "required": [
+          "results",
+          "bulkSearch",
+          "availabilitySource",
+          "registrarEnvironment",
+          "requested",
+          "accepted",
+          "invalid",
+          "unsupported",
+          "generatedAt"
+        ],
+        "properties": {
+          "results": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/PublicDomainSearchResult"
+            }
+          },
+          "bulkSearch": {
+            "type": "boolean"
+          },
+          "availabilitySource": {
+            "type": "string",
+            "enum": [
+              "ote",
+              "production"
+            ]
+          },
+          "registrarEnvironment": {
+            "type": "string",
+            "enum": [
+              "ote",
+              "production"
+            ]
+          },
+          "requested": {
+            "type": "integer"
+          },
+          "accepted": {
+            "type": "integer",
+            "maximum": 20
+          },
+          "invalid": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unsupported": {
+            "type": "integer"
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
