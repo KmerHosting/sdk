@@ -1,0 +1,38 @@
+name: Smoke
+
+# Is the live API the SDKs talk to up, and does its contract still match this catalog?
+# Light: curl only, under a minute. Runs every 6 hours, after each push to main, and on demand.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-smoke
+  cancel-in-progress: true
+
+jobs:
+  live:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Live checks
+        run: bash .github/scripts/smoke.sh .github/smoke-checks.txt
+
+      - name: Catalog matches the live API (warning only)
+        run: |
+          live="$(curl -sf -m 20 https://api.kmerhosting.com/openapi.json | jq -r '.paths | keys[]' | sort)"
+          here="$(jq -r '.paths | keys[]' openapi/openapi.json | sort)"
+          missing="$(comm -13 <(echo "$here") <(echo "$live") | paste -sd' ')"
+          extra="$(comm -23 <(echo "$here") <(echo "$live") | paste -sd' ')"
+          [[ -z "$missing" ]] || echo "::warning title=Catalog drift::Live API paths missing from openapi/openapi.json: $missing"
+          [[ -z "$extra" ]] || echo "::warning title=Catalog drift::Paths in openapi/openapi.json the live API no longer serves: $extra"
+          [[ -n "$missing$extra" ]] || echo "Catalog matches the live API ($(echo "$here" | wc -l) paths)."
