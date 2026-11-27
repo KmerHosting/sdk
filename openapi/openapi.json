@@ -604,6 +604,9 @@
           },
           "401": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_account"
@@ -626,6 +629,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_account_api_usage"
@@ -648,6 +654,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_services"
@@ -684,6 +693,9 @@
           },
           "404": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_services_serviceId"
@@ -706,6 +718,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_domains"
@@ -742,6 +757,9 @@
           },
           "404": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_domains_domainId"
@@ -828,6 +846,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "put_v1_domains_domainId_auto_renew"
@@ -920,6 +941,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "put_v1_domains_domainId_nameservers"
@@ -953,6 +977,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_domains_domainId_dns"
@@ -1085,6 +1112,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_domains_domainId_dns"
@@ -1212,6 +1242,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "put_v1_domains_domainId_dns_recordId"
@@ -1258,6 +1291,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "delete_v1_domains_domainId_dns_recordId"
@@ -1280,6 +1316,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_email_services"
@@ -1359,6 +1398,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_email_services_serviceId_provision"
@@ -1438,6 +1480,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_email_services_serviceId_dns_sync"
@@ -1460,6 +1505,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_hosting_services"
@@ -1493,6 +1541,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_hosting_services_serviceId_stats"
@@ -1581,6 +1632,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_hosting_services_serviceId_panel_access"
@@ -1603,6 +1657,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_lxc_instances"
@@ -1636,6 +1693,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_lxc_instances_serviceId"
@@ -1669,6 +1729,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_lxc_instances_serviceId_metrics"
@@ -1761,6 +1824,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_lxc_instances_serviceId_actions"
@@ -1794,6 +1860,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_lxc_instances_serviceId_snapshots"
@@ -1888,6 +1957,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_lxc_instances_serviceId_snapshots"
@@ -1978,6 +2050,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_lxc_instances_serviceId_password"
@@ -2067,6 +2142,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_lxc_instances_serviceId_reinstall"
@@ -2146,6 +2224,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_lxc_instances_serviceId_terminal_ticket"
@@ -2233,6 +2314,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "put_v1_lxc_instances_serviceId_auto_renew"
@@ -2326,6 +2410,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "put_v1_lxc_instances_serviceId_billing_period"
@@ -2348,6 +2435,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_kvm_instances"
@@ -2381,6 +2471,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_kvm_instances_serviceId"
@@ -2473,6 +2566,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_kvm_instances_serviceId_actions"
@@ -2559,6 +2655,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "put_v1_kvm_instances_serviceId_auto_renew"
@@ -2648,6 +2747,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_kvm_instances_serviceId_password"
@@ -2737,6 +2839,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_kvm_instances_serviceId_renew"
@@ -2816,6 +2921,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_kvm_instances_serviceId_cancel"
@@ -2895,6 +3003,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_kvm_instances_serviceId_keep_service"
@@ -2928,6 +3039,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "get_v1_kvm_instances_serviceId_snapshots"
@@ -3019,6 +3133,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_kvm_instances_serviceId_snapshots"
@@ -3119,6 +3236,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "patch_v1_kvm_instances_serviceId_snapshots_snapshotId"
@@ -3165,6 +3285,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "delete_v1_kvm_instances_serviceId_snapshots_snapshotId"
@@ -3252,6 +3375,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
           }
         },
         "operationId": "post_v1_kvm_instances_serviceId_snapshots_rollback"
@@ -3591,6 +3717,37 @@
     "responses": {
       "Error": {
         "description": "API error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "The credential exceeded its per-minute request allowance (`rate_limit_per_minute`, fixed one-minute window; default 60). Retry after the number of seconds in `Retry-After`.",
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds until the next one-minute window.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "X-RateLimit-Limit": {
+            "description": "Requests allowed per minute for this credential.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "X-RateLimit-Remaining": {
+            "description": "Requests left in the current window (0 on a 429).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
         "content": {
           "application/json": {
             "schema": {

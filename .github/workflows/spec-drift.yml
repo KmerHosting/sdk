@@ -1,0 +1,16 @@
+name: Spec drift
+# Fails when the live API's OpenAPI document differs from openapi/openapi.json.
+# The same check runs locally: scripts/check-spec-drift.sh
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  drift:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare with the live API
+        run: scripts/check-spec-drift.sh
